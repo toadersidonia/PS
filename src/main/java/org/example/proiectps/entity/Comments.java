@@ -1,0 +1,39 @@
+package org.example.proiectps.entity;
+
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+
+@Entity
+@Table (name = "comments")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+
+public class Comments {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long commId;
+
+    @ManyToOne
+    @JoinColumn(name="userId")
+    private Users author;
+
+    @ManyToOne
+    @JoinColumn(name="postId")
+    private Posts postId;
+
+    @Column(nullable = false)
+    private String text;
+
+    private String image;
+
+    @Column(nullable = false)
+    private LocalDateTime date;
+}
