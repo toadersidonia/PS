@@ -14,20 +14,19 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class Comments {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commId;
 
     @ManyToOne
-    @JoinColumn(name="userId")
-    private Users author;
+    @JoinColumn(name="user_id")
+    private User author;
 
     @ManyToOne
-    @JoinColumn(name="postId")
-    private Posts postId;
+    @JoinColumn(name="post_id")
+    private Post postId;
 
     @Column(nullable = false)
     private String text;
@@ -36,4 +35,8 @@ public class Comments {
 
     @Column(nullable = false)
     private LocalDateTime date;
+
+    public User getAuthor(){
+        return author;
+    }
 }

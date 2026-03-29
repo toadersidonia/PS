@@ -18,15 +18,15 @@ import org.example.proiectps.enums.PostStatus;
 @AllArgsConstructor
 
 
-public class Posts {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
     @ManyToOne
-    @JoinColumn(name = "userId")
-    private Users author;
+    @JoinColumn(name = "user_id")
+    private User author;
 
     @Column(nullable = false)
     private String title;
@@ -40,11 +40,11 @@ public class Posts {
     ///TAGS
     @ManyToMany
     @JoinTable(
-            name = "postTags", //numele tabelului intermediar
-            joinColumns = @JoinColumn(name = "postId"), //coloana care refera postul
-            inverseJoinColumns = @JoinColumn(name = "tagId") //coloana care refera tagul
+            name = "post_tags", //numele tabelului intermediar
+            joinColumns = @JoinColumn(name = "post_id"), //coloana care refera postul
+            inverseJoinColumns = @JoinColumn(name = "tag_id") //coloana care refera tagul
     )
-    private List<Tags> tags;
+    private List<Tag> tags;
 
 
 }
