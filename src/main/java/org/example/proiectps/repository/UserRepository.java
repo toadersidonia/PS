@@ -1,4 +1,4 @@
-package org.example.proiectps.service;
+package org.example.proiectps.repository;
 
 import org.example.proiectps.entity.User;
 import org.springframework.data.repository.CrudRepository;
