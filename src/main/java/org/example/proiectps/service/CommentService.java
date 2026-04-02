@@ -4,6 +4,8 @@ import org.example.proiectps.entity.Comment;
 import org.example.proiectps.entity.Post;
 import org.example.proiectps.entity.User;
 import org.example.proiectps.repository.CommentRepository;
+import org.example.proiectps.repository.PostRepository;
+import org.example.proiectps.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -15,7 +15,7 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping
-    public Comment createComment(@RequestBody Long postId, @RequestBody Long userId, @RequestBody Comment comment) {
+    public Comment createComment(@RequestBody Long postId, @RequestParam Long userId, @RequestParam Comment comment) {
         return commentService.createComment(comment, postId, userId);
     }
 
