@@ -26,7 +26,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name="post_id")
-    private Post postId;
+    private Post post;
 
     @Column(nullable = false)
     private String text;
@@ -34,9 +34,5 @@ public class Comment {
     private String image;
 
     @Column(nullable = false)
-    private LocalDateTime date;
-
-    public User getAuthor(){
-        return author;
-    }
+    private LocalDateTime date = LocalDateTime.now();
 }
