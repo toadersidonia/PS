@@ -33,3 +33,4 @@ public class User {
 
     private boolean banned;
 }
+
