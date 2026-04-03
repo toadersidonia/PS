@@ -32,3 +32,35 @@ Content-Type: application/json
 
 ### Delete user
 DELETE http://localhost:8080/users/1
+
+GET http://localhost:8080/posts
+
+POST http://localhost:8080/createPost
+Content-Type: application/json
+
+{
+  "title": "My first post",
+  "text": "This is the content of the post",
+  "date": "2026-04-02T12:30:00",
+  "image": "post1.png",
+  "author": {
+    "userId": 1
+  },
+  "tags": []
+}
+
+GET http://localhost:8080/1
+
+PUT http://localhost:8080/1?userId=1
+Content-Type: application/json
+
+{
+  "title": "Updated post title",
+  "text": "Updated content",
+  "date": "2026-04-02T15:00:00",
+  "image": "updated_image.png",
+  "author": {
+    "userId": 1
+  },
+  "tags": []
+}
