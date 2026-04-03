@@ -1,0 +1,40 @@
+### Create a post
+
+###
+
+### Create a comment
+POST http://localhost:8080/comments?postId=1&userId=1
+Content-Type: application/json
+
+{
+"text": "Comentariu de test",
+"image": "https://example.com/image.png",
+}
+
+###
+
+### Retrieve all comments for a post
+GET http://localhost:8080/comments/post/1
+Accept: application/json
+
+###
+
+### Retrieve single comment by id
+GET http://localhost:8080/comments/1
+Accept: application/json
+
+###
+
+### Update a comment
+PUT http://localhost:8080/comments/1?userId=1
+Content-Type: application/json
+
+{
+  "text": "Comentariu modificat",
+  "image": "https://example.com/updated_image.png"
+}
+
+###
+
+### Delete a comment
+DELETE http://localhost:8080/comments/1?userId=1
