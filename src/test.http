@@ -33,8 +33,13 @@ Content-Type: application/json
 ### Delete user
 DELETE http://localhost:8080/users/1
 
+### Get all posts
 GET http://localhost:8080/posts
+Accept: application/json
 
+###
+
+### Create a new post
 POST http://localhost:8080/createPost
 Content-Type: application/json
 
@@ -49,8 +54,15 @@ Content-Type: application/json
   "tags": []
 }
 
-GET http://localhost:8080/1
+###
 
+### Get post by ID
+GET http://localhost:8080/1
+Accept: application/json
+
+###
+
+### Update post
 PUT http://localhost:8080/1?userId=1
 Content-Type: application/json
 
@@ -64,3 +76,8 @@ Content-Type: application/json
   },
   "tags": []
 }
+
+###
+
+### Delete post
+DELETE http://localhost:8080/1?userId=1
