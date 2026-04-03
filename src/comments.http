@@ -1,20 +1,31 @@
 ### Create a post
+POST http://localhost:8080/posts/createPost
+Content-Type: application/json
+
+{
+  "title": "Postare de test",
+  "text": "Acesta este textul postarii de test.",
+  "image": "https://example.com/image.png",
+  "author": {
+    "userId": 2
+  }
+}
 
 ###
 
 ### Create a comment
-POST http://localhost:8080/comments?postId=1&userId=1
+POST http://localhost:8080/comments?postId=2&userId=2
 Content-Type: application/json
 
 {
 "text": "Comentariu de test",
-"image": "https://example.com/image.png",
+"image": "https://example.com/image.png"
 }
 
 ###
 
 ### Retrieve all comments for a post
-GET http://localhost:8080/comments/post/1
+GET http://localhost:8080/comments/post/2
 Accept: application/json
 
 ###
@@ -26,7 +37,7 @@ Accept: application/json
 ###
 
 ### Update a comment
-PUT http://localhost:8080/comments/1?userId=1
+PUT http://localhost:8080/comments/2?userId=2
 Content-Type: application/json
 
 {
@@ -37,4 +48,4 @@ Content-Type: application/json
 ###
 
 ### Delete a comment
-DELETE http://localhost:8080/comments/1?userId=1
+DELETE http://localhost:8080/comments/2?userId=2

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller("/posts")
-
+@RestController
+@RequestMapping("/posts")
 public class PostController {
     @Autowired
     private PostService postService;

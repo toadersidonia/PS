@@ -33,6 +33,9 @@ public class CommentService {
             throw new RuntimeException("Comment must have text or image");
         }
 
+        comment.setAuthor(author);
+        comment.setPost(post);
+
         return commentRepository.save(comment);
     }
 
@@ -74,4 +77,5 @@ public class CommentService {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
     }
+
 }
