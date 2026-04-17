@@ -2,10 +2,13 @@ package org.example.proiectps.service;
 
 
 import org.example.proiectps.entity.Post;
+import org.example.proiectps.entity.User;
 import org.example.proiectps.repository.PostRepository;
+import org.example.proiectps.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +19,16 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    public Post addPost(Post post) {
+    @Autowired
+    private UserRepository userRepository;
+
+    public Post addPost(Post post, Long userId) {
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+
+        post.setAuthor(author);
+        post.setDate(LocalDateTime.now());
+
         return postRepository.save(post);
     }
 
@@ -52,7 +64,6 @@ public class PostService {
         // update
         existingPost.setTitle(post.getTitle());
         existingPost.setText(post.getText());
-        existingPost.setDate(post.getDate());
         existingPost.setImage(post.getImage());
 
         return postRepository.save(existingPost);

@@ -8,9 +8,11 @@ import org.example.proiectps.repository.PostRepository;
 import org.example.proiectps.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +21,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+//UNIT TESTING = verificam Service ul, dar FARA sa folosim baza de date reala
+//Pt teste unitare: Junit + Mokito -> @ExtendWith, @Mock, verify(), when()
+
+@ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
-    @Mock
+    @Mock //creaza un obeict simulat
     private CommentRepository commentRepository;
 
     @Mock
@@ -47,8 +53,7 @@ class CommentServiceTest {
         post.setPostId(1L);
         post.setTitle("Test Post");
 
-        // Mock behavior for repositories
-        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post)); //metoda mockito care spune ce sa returneze un mock cand e apelat
         when(userRepository.findById(1L)).thenReturn(Optional.of(author));
     }
 
@@ -60,12 +65,13 @@ class CommentServiceTest {
         comment.setPost(post);
 
         when(commentRepository.save(comment)).thenReturn(comment);
+        //cand apeleaza save cu acest comment, returneaza comment ul
 
         Comment result = commentService.createComment(comment, 1L, 1L);
 
         assertEquals("Test comment", result.getText());
         assertEquals(author.getUserId(), result.getAuthor().getUserId());
-        verify(commentRepository, times(1)).save(comment);
+        verify(commentRepository, times(1)).save(comment); //metoda mockito care veirifica daca un mock a fost apelat
     }
 
     @Test
@@ -88,6 +94,7 @@ class CommentServiceTest {
 
         assertEquals(2, result.size());
         verify(commentRepository, times(1)).findByPostPostId(post.getPostId());
+        //verifica ca rpeository ul a fost apelat o singura data
     }
 
     @Test
@@ -148,6 +155,10 @@ class CommentServiceTest {
         comment.setCommId(1L);
         comment.setAuthor(author);
 
+        Post mockPost = new Post();
+        mockPost.setAuthor(new User());
+        comment.setPost(mockPost);
+
         when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
 
         commentService.deleteComment(1L, 1L);
@@ -160,6 +171,10 @@ class CommentServiceTest {
         Comment comment = new Comment();
         comment.setCommId(1L);
         comment.setAuthor(author);
+
+        Post mockPost = new Post();
+        mockPost.setAuthor(new User());
+        comment.setPost(mockPost);
 
         when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
 

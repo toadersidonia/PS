@@ -24,7 +24,6 @@ class PostServiceIntegrationTest {
     @Autowired
     private UserService userService; // avem nevoie de user pentru autor
 
-    // helper pentru user
     private User createTestUser(String username) {
         User user = new User();
         user.setUsername(username);
@@ -36,7 +35,6 @@ class PostServiceIntegrationTest {
         return userService.createUser(user);
     }
 
-    // helper pentru post
     private Post createTestPost(User author, String title) {
         Post post = new Post();
         post.setTitle(title);
@@ -45,10 +43,9 @@ class PostServiceIntegrationTest {
         post.setDate(LocalDateTime.now());
         post.setAuthor(author);
         post.setStatus(PostStatus.JUST_POSTED);
-        return postService.addPost(post);
+        return postService.addPost(post, author.getUserId());
     }
 
-    // ------------------ CREATE ------------------
     @Test
     void createPost_shouldSavePostInDB() {
         User author = createTestUser("rares");
@@ -59,7 +56,6 @@ class PostServiceIntegrationTest {
         assertEquals(author.getUserId(), post.getAuthor().getUserId());
     }
 
-    // ------------------ GET ALL ------------------
     @Test
     void getAllPosts_shouldReturnList() {
         User author = createTestUser("alex");
@@ -72,7 +68,6 @@ class PostServiceIntegrationTest {
         assertTrue(posts.size() >= 2);
     }
 
-    // ------------------ GET BY ID ------------------
     @Test
     void getPostById_shouldReturnPost() {
         User author = createTestUser("ion");
@@ -89,13 +84,13 @@ class PostServiceIntegrationTest {
         assertNull(found);
     }
 
-    // ------------------ UPDATE ------------------
     @Test
     void updatePost_shouldModifyPost_WhenOwner() {
         User author = createTestUser("maria");
         Post saved = createTestPost(author, "Original Title");
 
         Post update = new Post();
+        update.setPostId(saved.getPostId());
         update.setTitle("Updated Title");
         update.setText("Updated Text");
         update.setImage("updated.png");
@@ -115,6 +110,7 @@ class PostServiceIntegrationTest {
         Post saved = createTestPost(author, "Original Title");
 
         Post update = new Post();
+        update.setPostId(saved.getPostId());
         update.setTitle("Hack Title");
         update.setText("Hack Text");
         update.setImage("hack.png");
@@ -129,7 +125,6 @@ class PostServiceIntegrationTest {
         assertEquals("You are not allowed to update this post", exception.getMessage());
     }
 
-    // ------------------ DELETE ------------------
     @Test
     void deletePost_shouldRemovePost_WhenOwner() {
         User author = createTestUser("rares");

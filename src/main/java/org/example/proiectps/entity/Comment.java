@@ -1,6 +1,7 @@
 package org.example.proiectps.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,10 +23,12 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name="user_id")
+    @JsonIgnore
     private User author;
 
     @ManyToOne
     @JoinColumn(name="post_id")
+    @JsonIgnore
     private Post post;
 
     @Column(nullable = false)

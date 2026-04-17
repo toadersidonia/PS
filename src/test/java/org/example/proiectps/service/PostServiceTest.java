@@ -49,20 +49,18 @@ class PostServiceTest {
         return p;
     }
 
-    // ------------------ ADD ------------------
     @Test
     void addPost_ShouldSavePost() {
         Post p = buildPost(1L, 1L); //cream un post
         when(postRepository.save(p)).thenReturn(p);
 
-        Post result = postService.addPost(p); //apelam metoda de testare
+        Post result = postService.addPost(p, 2L); //apelam metoda de testare
 
         assertNotNull(result);
         assertEquals("Title 1", result.getTitle()); //verifica ca titlul e corect
         verify(postRepository).save(p); //confirma ca repositoryul a fost apelat exact o data
     }
 
-    // ------------------ GET ALL ------------------
     @Test
     void getAllPosts_ShouldReturnPosts() {
         //facem 2 posturi
@@ -75,7 +73,6 @@ class PostServiceTest {
         assertEquals("Title 1", result.get(0).getTitle());
     }
 
-    // ------------------ GET BY ID ------------------
     @Test
     void getPostById_ShouldReturnPost_WhenExists() {
         Post p = buildPost(1L, 1L);
@@ -95,7 +92,6 @@ class PostServiceTest {
         assertNull(result);
     }
 
-    // ------------------ UPDATE ------------------
     @Test
     void updatePost_ShouldUpdate_WhenOwner() {
         User author = buildUser(1L);
@@ -129,7 +125,6 @@ class PostServiceTest {
         assertEquals("You are not allowed to update this post", exception.getMessage());
     }
 
-    // ------------------ DELETE ------------------
     @Test
     void deletePost_ShouldDelete_WhenOwner() {
         Post existing = buildPost(1L, 1L);

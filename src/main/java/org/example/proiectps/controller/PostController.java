@@ -15,13 +15,13 @@ public class PostController {
     private PostService postService;
 
     // CREATE
-    @PostMapping("/createPost")
-    public Post addPost(@RequestBody Post post) {
-        return postService.addPost(post);
+    @PostMapping
+    public Post addPost(@RequestBody Post post, @RequestParam Long userId) {
+        return postService.addPost(post, userId);
     }
 
     // READ ALL
-    @GetMapping("/posts")
+    @GetMapping
     List<Post> getAllPosts(){ return postService.getAllPosts(); }
 
     // READ BY ID
@@ -30,7 +30,7 @@ public class PostController {
         return postService.getPostById(id);
     }
 
-    // UPDATE
+    //UPDATE
     @PutMapping("/{id}")
     public Post updatePost(
             @PathVariable Long id,
@@ -38,7 +38,9 @@ public class PostController {
             @RequestParam Long userId
     ) {
         post.setPostId(id);
-        return postService.updatePost(post, userId);
+        Post updatedPost = postService.updatePost(post, userId);
+        //return "Post with ID " + updatedPost.getPostId() + " was updated";
+        return post;
     }
 
     // DELETE

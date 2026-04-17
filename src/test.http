@@ -14,6 +14,19 @@ Content-Type: application/json
   "banned": false
 }
 
+### Create user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "username": "alexa",
+  "password": "3840",
+  "email": "alexa@email.com",
+  "role": "user",
+  "score": 0,
+  "banned": false
+}
+
 ### Get user by id
 GET http://localhost:8080/users/1
 
@@ -31,53 +44,98 @@ Content-Type: application/json
 }
 
 ### Delete user
-DELETE http://localhost:8080/users/1
+DELETE http://localhost:8080/users/2
+
+###
+
+### Create a new post
+POST http://localhost:8080/posts?userId=1
+Content-Type: application/json
+
+{
+  "title": "My first post",
+  "text": "This is the content",
+  "image": "post1.png"
+}
+
+### Create a second post
+POST http://localhost:8080/posts?userId=1
+Content-Type: application/json
+
+{
+"title": "My second post",
+"text": "This is the content of the second post",
+"image": "post2.png"
+}
+
+###
 
 ### Get all posts
 GET http://localhost:8080/posts
 Accept: application/json
 
-###
-
-### Create a new post
-POST http://localhost:8080/createPost
-Content-Type: application/json
-
-{
-  "title": "My first post",
-  "text": "This is the content of the post",
-  "date": "2026-04-02T12:30:00",
-  "image": "post1.png",
-  "author": {
-    "userId": 1
-  },
-  "tags": []
-}
-
-###
-
 ### Get post by ID
-GET http://localhost:8080/1
+GET http://localhost:8080/posts/1
 Accept: application/json
 
-###
 
 ### Update post
-PUT http://localhost:8080/1?userId=1
+PUT http://localhost:8080/posts/1?userId=1
 Content-Type: application/json
 
 {
   "title": "Updated post title",
   "text": "Updated content",
-  "date": "2026-04-02T15:00:00",
-  "image": "updated_image.png",
-  "author": {
-    "userId": 1
-  },
-  "tags": []
+  "image": "updated_image.png"
+}
+
+### Delete post
+DELETE http://localhost:8080/posts/2?userId=1
+
+###
+
+### Create a comment
+POST http://localhost:8080/comments?postId=1&userId=1
+Content-Type: application/json
+
+{
+  "text": "Comentariu de test",
+  "image": "https://example.com/image.png"
+}
+
+### Create a comment
+POST http://localhost:8080/comments?postId=1&userId=1
+Content-Type: application/json
+
+{
+  "text": "Comentariu de test 2",
+  "image": "https://example2.com/image.png"
 }
 
 ###
 
-### Delete post
-DELETE http://localhost:8080/1?userId=1
+### Retrieve all comments for a post
+GET http://localhost:8080/comments/post/1
+Accept: application/json
+
+###
+
+### Retrieve single comment by id
+GET http://localhost:8080/comments/1
+Accept: application/json
+
+###
+
+### Update a comment
+PUT http://localhost:8080/comments/1?userId=1
+Content-Type: application/json
+
+{
+  "text": "Comentariu modificat",
+  "image": "https://example.com/updated_image.png"
+}
+
+###
+
+### Delete a comment
+DELETE http://localhost:8080/comments/2?userId=1

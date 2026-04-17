@@ -1,6 +1,7 @@
 package org.example.proiectps.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User author;
 
     @Column(nullable = false)
@@ -44,6 +46,8 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"), //coloana care refera postul
             inverseJoinColumns = @JoinColumn(name = "tag_id") //coloana care refera tagul
     )
+
+    @JsonIgnore
     private List<Tag> tags;
 
 
