@@ -40,3 +40,60 @@
 .read-the-docs {
   color: #888;
 }
+
+
+/*postare*/
+.post-card {
+  background: #111;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #222;
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.1);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.author {
+  font-weight: bold;
+}
+
+.post-title {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.post-text {
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.post-image {
+  width: 100%;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  color: #ec4899;
+  cursor: pointer;
+}
+
+.comments {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #aaa;
+}
