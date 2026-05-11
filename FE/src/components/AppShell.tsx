@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "../styles/App.css";
+//import "../styles/App.css";
 
 export const AppShell = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();

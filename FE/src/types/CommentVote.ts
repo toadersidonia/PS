@@ -1,5 +1,14 @@
+// export type CommentVote = {
+//   userId: string;
+//   commentId: string;
+//   liked: boolean;
+// };
+
 export type CommentVote = {
-  userId: string;
+  id: string;
+
   commentId: string;
-  liked: boolean;
+  userId: string;
+
+  value: 1 | -1; // 1 = like, -1 = dislike
 };
