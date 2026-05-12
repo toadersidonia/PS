@@ -3,6 +3,7 @@ package org.example.proiectps.service;
 import org.example.proiectps.entity.User;
 import org.example.proiectps.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +15,19 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        if (user.getRole() == null) {
+            user.setRole("USER");
+        }
+        if (user.getScore() == null) {
+            user.setScore(0L);
+        }
+
         return userRepository.save(user);
     }
 
@@ -26,15 +39,17 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
     public User updateUser(Long id, User updatedUser) {
         User existing = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         existing.setUsername(updatedUser.getUsername());
         existing.setEmail(updatedUser.getEmail());
-        existing.setPassword(updatedUser.getPassword());
-        existing.setRole(updatedUser.getRole());
-        existing.setScore(updatedUser.getScore());
-        existing.setBanned(updatedUser.isBanned());
+
         return userRepository.save(existing);
     }
 
