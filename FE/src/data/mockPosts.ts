@@ -1,23 +1,22 @@
 import type { Post } from "../types/Post";
 
 export const mockPosts: Post[] = [
-
   {
     id: 1,
 
     author: "Alex",
 
-    title: "Morning coffee ✨",
+    title: "First post",
+    text: "Hello everyone ✨",
 
-    text: "Starting the day with coffee and good vibes ☕",
+    image: "https://picsum.photos/600/400",
 
-    image:
-      "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085",
+    createdAt: new Date().toISOString(),
 
-    createdAt: "2026-05-10T09:30:00",
+    status: "Just posted",
 
-    likes: 24,
-    dislikes: 2,
+    likes: 12,
+    dislikes: 1,
   },
 
   {
@@ -25,50 +24,14 @@ export const mockPosts: Post[] = [
 
     author: "Maria",
 
-    title: "Sunset walk 🌸",
+    title: "Need help",
+    text: "Does anyone know React Router?",
 
-    text: "Today’s sunset was unreal honestly 😭",
+    createdAt: new Date().toISOString(),
 
-    image:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+    status: "First reactions",
 
-    createdAt: "2026-05-10T19:10:00",
-
-    likes: 40,
-    dislikes: 1,
-  },
-
-  {
-    id: 3,
-
-    author: "David",
-
-    title: "Gaming night 🎮",
-
-    text: "Finally finished my setup and it looks insane",
-
-    image:
-      "https://images.unsplash.com/photo-1511512578047-dfb367046420",
-
-    createdAt: "2026-05-11T00:15:00",
-
-    likes: 18,
-    dislikes: 4,
-  },
-
-  {
-    id: 4,
-
-    author: "Sofia",
-
-    title: "Tiny life update",
-
-    text: "Trying to survive university projects rn 💀",
-
-    createdAt: "2026-05-11T13:40:00",
-
-    likes: 55,
+    likes: 7,
     dislikes: 0,
   },
-
 ];

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import type { PostStatus } from "../types/Post";
+
 
 type Props = {
   onAddPost: (post: {
@@ -10,6 +12,7 @@ type Props = {
 
     createdAt: string;
 
+    status: PostStatus;
     likes: number;
     dislikes: number;
   }) => void;
@@ -27,21 +30,23 @@ export default function PostComposer({ onAddPost }: Props) {
 
     if (!title || !text) return;
 
-    onAddPost({
-      id: Date.now(),
+  onAddPost({
+    id: Date.now(),
 
-      author: "You",
+    author: "You",
 
-      title,
-      text,
+    title,
+    text,
 
-      image: image || undefined,
+    image: image || undefined,
 
-      createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
 
-      likes: 0,
-      dislikes: 0,
-    });
+    status: "Just posted",
+
+    likes: 0,
+    dislikes: 0,
+  });
 
     setTitle("");
     setText("");
