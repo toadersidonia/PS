@@ -72,21 +72,21 @@ export default function PostComposer({ onAddPost }: Props) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Post title..."
-            className="w-full rounded-2xl border px-4 py-3"
+            className="w-full rounded-2xl bg-white/80 px-4 py-3 outline-none resize-none focus:ring-2 focus:ring-pink-300 transition shadow-sm"
           />
 
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Write something..."
-            className="w-full rounded-2xl border px-4 py-3"
+            className="w-full rounded-2xl bg-white/80 px-4 py-3 outline-none resize-none focus:ring-2 focus:ring-pink-300 transition shadow-sm"
           />
 
           <input
             value={image}
             onChange={(e) => setImage(e.target.value)}
             placeholder="Image URL (optional)"
-            className="w-full rounded-2xl border px-4 py-3"
+            className="w-full rounded-2xl bg-white/80 px-4 py-3 outline-none resize-none focus:ring-2 focus:ring-pink-300 transition shadow-sm"
           />
 
           <div className="flex justify-end gap-3">
