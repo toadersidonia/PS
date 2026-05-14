@@ -1,17 +1,15 @@
 import { useState } from "react";
 import type { PostStatus } from "../types/Post";
-
+import { useAuth } from "../hooks/useAuth";
 
 type Props = {
   onAddPost: (post: {
-    id: number;
+    id: string;
     author: string;
     title: string;
     text: string;
     image?: string;
-
     createdAt: string;
-
     status: PostStatus;
     likes: number;
     dislikes: number;
@@ -20,38 +18,32 @@ type Props = {
 
 export default function PostComposer({ onAddPost }: Props) {
 
-  const [open, setOpen] = useState(false);
+  const { user } = useAuth();
 
+  const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
 
   const submitPost = () => {
 
-    if (!title || !text) return;
+    if (!title || !text || !user) return;
 
-  onAddPost({
-    id: Date.now(),
-
-    author: "You",
-
-    title,
-    text,
-
-    image: image || undefined,
-
-    createdAt: new Date().toISOString(),
-
-    status: "Just posted",
-
-    likes: 0,
-    dislikes: 0,
-  });
+    onAddPost({
+      id: crypto.randomUUID(),
+      author: user.username,
+      title,
+      text,
+      image: image || undefined,
+      createdAt: new Date().toISOString(),
+      status: "Just posted",
+      likes: 0,
+      dislikes: 0,
+    });
 
     setTitle("");
     setText("");
     setImage("");
-
     setOpen(false);
   };
 

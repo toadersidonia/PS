@@ -1,12 +1,14 @@
 import CommentCard from "./CommentCard";
 import CommentComposer from "./CommentComposer";
 import { useComments } from "../hooks/useComments";
+import { useAuth } from "../hooks/useAuth";
 
 type Props = {
-  postId: number;
+  postId: string;
 };
 
 export default function CommentSection({ postId }: Props) {
+  const { user } = useAuth();
 
   const {
     comments,
@@ -15,7 +17,8 @@ export default function CommentSection({ postId }: Props) {
     dislike,
     remove,
     editComment,
-  } = useComments(postId);
+    isOwner,
+  } = useComments(postId, user?.username ?? null);
 
   return (
     <div className="mt-4 pt-4 border-t border-black/5">
@@ -23,13 +26,6 @@ export default function CommentSection({ postId }: Props) {
       <CommentComposer onAddComment={addComment} />
 
       <div className="space-y-3">
-
-        {comments.length === 0 && (
-          <p className="text-sm text-gray-400 text-center">
-            No comments yet ✨
-          </p>
-        )}
-
         {comments.map((c) => (
           <CommentCard
             key={c.id}
@@ -38,10 +34,11 @@ export default function CommentSection({ postId }: Props) {
             onDislike={dislike}
             onDelete={remove}
             onEdit={editComment}
+            canEdit={isOwner}
           />
         ))}
-
       </div>
+
     </div>
   );
 }

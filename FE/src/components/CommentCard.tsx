@@ -1,13 +1,15 @@
 import { useState } from "react";
 import type { Comment } from "../types/Comment";
+import { useAuth } from "../hooks/useAuth";
 
 type Props = {
   comment: Comment;
 
-  onLike: (id: number) => void;
-  onDislike: (id: number) => void;
-  onDelete: (id: number) => void;
-  onEdit: (id: number, text: string, image?: string) => void;
+  onLike: (id: string) => void;
+  onDislike: (id: string) => void;
+  onDelete: (id: string) => void;
+  onEdit: (id: string, text: string, image?: string) => void;
+  canEdit: (comment: Comment) => boolean;
 };
 
 export default function CommentCard({
@@ -16,11 +18,15 @@ export default function CommentCard({
   onDislike,
   onDelete,
   onEdit,
+  canEdit,
 }: Props) {
+  const { user } = useAuth();
 
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(comment.text);
   const [image, setImage] = useState(comment.image || "");
+
+  const isOwner = canEdit(comment);
 
   const save = () => {
     if (!text.trim()) return;
@@ -34,7 +40,6 @@ export default function CommentCard({
 
       {/* HEADER */}
       <div className="flex justify-between items-center">
-
         <div>
           <p className="text-sm font-semibold text-pink-500">
             {comment.author}
@@ -45,9 +50,8 @@ export default function CommentCard({
           </p>
         </div>
 
-        {!editing && (
+        {isOwner && !editing && (
           <div className="flex gap-3 text-xs">
-
             <button
               onClick={() => setEditing(true)}
               className="text-blue-500 hover:underline"
@@ -61,57 +65,42 @@ export default function CommentCard({
             >
               delete
             </button>
-
           </div>
         )}
-
       </div>
 
-      {/* CONTENT / EDIT */}
+      {/* CONTENT */}
       {editing ? (
         <div className="mt-3 space-y-2">
-
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="w-full p-3 rounded-xl bg-white border border-black/10 outline-none focus:border-pink-400"
+            className="w-full p-3 rounded-xl bg-white border border-black/10"
           />
 
           <input
             value={image}
             onChange={(e) => setImage(e.target.value)}
-            placeholder="Image URL (optional)"
-            className="w-full p-3 rounded-xl bg-white border border-black/10 outline-none focus:border-pink-400"
+            className="w-full p-3 rounded-xl bg-white border border-black/10"
+            placeholder="Image URL"
           />
 
-          {image && (
-            <img
-              src={image}
-              className="rounded-xl max-h-40 w-full object-cover"
-            />
-          )}
-
-          {/* BUTTONS MODERNE */}
-          <div className="flex justify-end gap-2 pt-2">
-
+          <div className="flex justify-end gap-2">
             <button
               onClick={() => setEditing(false)}
-              className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 transition"
+              className="px-4 py-2 rounded-xl text-gray-500 hover:bg-gray-100 transition"
             >
               Cancel
             </button>
 
             <button
               onClick={save}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:scale-105 transition"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white"
             >
-              Save
+              Save ✨
             </button>
-
           </div>
-
         </div>
-
       ) : (
         <>
           <p className="text-sm text-gray-700 mt-2">
@@ -125,31 +114,21 @@ export default function CommentCard({
             />
           )}
 
-          {/* ACTIONS */}
           <div className="flex gap-4 mt-3 text-sm">
-
-            <button
-              onClick={() => onLike(comment.id)}
-              className="text-pink-500"
-            >
+            <button onClick={() => onLike(comment.id)}>
               ❤️ {comment.likes}
             </button>
 
-            <button
-              onClick={() => onDislike(comment.id)}
-              className="text-gray-500"
-            >
+            <button onClick={() => onDislike(comment.id)}>
               👎 {comment.dislikes}
             </button>
 
             <span className="ml-auto text-xs text-gray-400">
               score: {comment.likes - comment.dislikes}
             </span>
-
           </div>
         </>
       )}
-
     </div>
   );
 }

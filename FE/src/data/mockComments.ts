@@ -3,9 +3,9 @@ import type { Comment } from "../types/Comment";
 export const mockComments: Comment[] = [
 
   {
-    id: 1,
+    id: "1",
 
-    postId: 1,
+    postId: "1",
 
     author: "Maria",
 
@@ -21,9 +21,9 @@ export const mockComments: Comment[] = [
   },
 
   {
-    id: 2,
+    id: "2",
 
-    postId: 1,
+    postId: "1",
 
     author: "Alex",
 
@@ -36,9 +36,9 @@ export const mockComments: Comment[] = [
   },
 
   {
-    id: 3,
+    id: "3",
 
-    postId: 1,
+    postId: "3",
 
     author: "Sofia",
 
@@ -51,9 +51,9 @@ export const mockComments: Comment[] = [
   },
 
   {
-    id: 4,
+    id: "4",
 
-    postId: 2,
+    postId: "2",
 
     author: "David",
 

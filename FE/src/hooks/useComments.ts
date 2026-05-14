@@ -2,17 +2,23 @@ import { useState } from "react";
 import type { Comment } from "../types/Comment";
 import { mockComments } from "../data/mockComments";
 
-export function useComments(postId: number) {
-
+export function useComments(postId: string, currentUser: string | null) {
   const [comments, setComments] = useState<Comment[]>(
     mockComments.filter((c) => c.postId === postId)
   );
 
+  //  helper ownership
+  const isOwner = (comment: Comment) =>
+    comment.author === currentUser;
+
+  // ADD
   const addComment = (text: string, image?: string) => {
+    if (!currentUser) return;
+
     const newComment: Comment = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       postId,
-      author: "You",
+      author: currentUser,
       text,
       image,
       createdAt: new Date().toISOString(),
@@ -23,7 +29,8 @@ export function useComments(postId: number) {
     setComments((prev) => [newComment, ...prev]);
   };
 
-  const like = (id: number) => {
+  // LIKE
+  const like = (id: string) => {
     setComments((prev) =>
       prev.map((c) =>
         c.id === id ? { ...c, likes: c.likes + 1 } : c
@@ -31,7 +38,8 @@ export function useComments(postId: number) {
     );
   };
 
-  const dislike = (id: number) => {
+  // DISLIKE
+  const dislike = (id: string) => {
     setComments((prev) =>
       prev.map((c) =>
         c.id === id ? { ...c, dislikes: c.dislikes + 1 } : c
@@ -39,22 +47,23 @@ export function useComments(postId: number) {
     );
   };
 
-  const remove = (id: number) => {
-    setComments((prev) => prev.filter((c) => c.id !== id));
+  // DELETE 
+  const remove = (id: string) => {
+    setComments((prev) =>
+      prev.filter((c) => !(c.id === id && isOwner(c)))
+    );
   };
 
-  const editComment = (id: number, text: string, image?: string) => {
+  // EDIT 
+  const editComment = (id: string, text: string, image?: string) => {
     setComments((prev) =>
       prev.map((c) =>
-        c.id === id
+        c.id === id && isOwner(c)
           ? { ...c, text, image }
           : c
       )
     );
   };
-
-  // ⭐ SCORE (IMPORTANT)
-  const getScore = (c: Comment) => c.likes - c.dislikes;
 
   return {
     comments,
@@ -63,6 +72,6 @@ export function useComments(postId: number) {
     dislike,
     remove,
     editComment,
-    getScore,
+    isOwner,
   };
 }

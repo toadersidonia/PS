@@ -1,7 +1,22 @@
 @import "tailwindcss";
 
 body {
-  background-color: #09090b; /* zinc-950 */
-  color: white;
   font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Fix pentru parole - afiseaza bulinele clar la toate starile */
+input[type="password"] {
+  font-family: Verdana, sans-serif;
+  letter-spacing: 0.15em;
+  -webkit-text-security: disc;
+}
+
+/* Fix pentru autocomplete - fara fundalul albastru de la Chrome */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #1f2937 !important;
+  transition: background-color 9999s ease-in-out 0s;
+  caret-color: #1f2937;
 }

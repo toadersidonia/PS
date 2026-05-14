@@ -2,7 +2,7 @@ import type { Post } from "../types/Post";
 
 export const mockPosts: Post[] = [
   {
-    id: 1,
+    id: "1",
 
     author: "Alex",
 
@@ -20,7 +20,7 @@ export const mockPosts: Post[] = [
   },
 
   {
-    id: 2,
+    id: "2",
 
     author: "Maria",
 
