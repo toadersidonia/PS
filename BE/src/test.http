@@ -139,3 +139,36 @@ Content-Type: application/json
 
 ### Delete a comment
 DELETE http://localhost:8080/comments/2?userId=1
+
+
+###
+### ----- AUTH TESTS -----
+###
+
+### Register - creeaza user nou
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "raresnou",
+  "email": "raresnou@test.com",
+  "password": "parola123"
+}
+
+### Login - autentificare
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "raresnou",
+  "password": "parola123"
+}
+
+### Login cu parola gresita (trebuie sa dea eroare)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "raresnou",
+  "password": "gresita"
+}

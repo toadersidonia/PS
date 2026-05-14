@@ -1,52 +1,28 @@
+import { api } from "../lib/api";
 import type { Post } from "../types/Post";
-import { load, save } from "../lib/utils";
-
-const KEY = "posts";
-
-let posts: Post[] = load<Post[]>(KEY) || [];
-
-const persist = () => save(KEY, posts);
 
 export const postService = {
-  getAll: () => posts,
-
-  setInitial: (initial: Post[]) => {
-    posts = load<Post[]>(KEY) || initial;
-    persist();
+  // GET ALL
+  getAll: async (): Promise<Post[]> => {
+    return api.get<Post[]>("/posts");
   },
 
-  create: (post: Post) => {
-    posts = [post, ...posts];
-    persist();
+  // CREATE
+  create: async (post: Partial<Post>, userId: number): Promise<Post> => {
+    return api.post<Post>(`/posts?userId=${userId}`, post);
   },
 
-  update: (id: string, data: Partial<Post>, user: string) => {
-    posts = posts.map((p) =>
-      p.id === id && p.author === user
-        ? { ...p, ...data }
-        : p
-    );
-    persist();
+  // UPDATE
+  update: async (
+    id: string,
+    data: Partial<Post>,
+    userId: number
+  ): Promise<Post> => {
+    return api.put<Post>(`/posts/${id}?userId=${userId}`, data);
   },
 
-  remove: (id: string, user: string) => {
-    posts = posts.filter(
-      (p) => !(p.id === id && p.author === user)
-    );
-    persist();
-  },
-
-  like: (id: string) => {
-    posts = posts.map((p) =>
-      p.id === id ? { ...p, likes: p.likes + 1 } : p
-    );
-    persist();
-  },
-
-  dislike: (id: string) => {
-    posts = posts.map((p) =>
-      p.id === id ? { ...p, dislikes: p.dislikes + 1 } : p
-    );
-    persist();
+  // DELETE
+  remove: async (id: string, userId: number): Promise<void> => {
+    return api.delete<void>(`/posts/${id}?userId=${userId}`);
   },
 };

@@ -4,8 +4,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-//import { authService } from "../services/authService";
-import { mockAuthService as authService } from "../services/mockAuthService";
+import { authService } from "../services/authService";
+//import { mockAuthService as authService } from "../services/mockAuthService";
 import type {
   LoginRequest,
   RegisterRequest,

@@ -1,56 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { postService } from "../services/postService";
 import type { Post } from "../types/Post";
-import { mockPosts } from "../data/mockPosts";
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "./useAuth";
 
 export function usePosts() {
   const { user } = useAuth();
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const [posts, setPosts] = useState<Post[]>(mockPosts);
+  // LOAD
+  useEffect(() => {
+    postService.getAll().then(setPosts);
+  }, []);
 
-  const isOwner = (post: Post) => {
-    return user?.username === post.author;
+  // CREATE
+  const addPost = async (post: Partial<Post>) => {
+    if (!user) return;
+
+    const created = await postService.create(
+      post,
+      Number(user.id) // 🔥 IMPORTANT (backend = Long)
+    );
+
+    setPosts((prev) => [created, ...prev]);
   };
 
-  const canEdit = (post: Post) => {
-    return user?.username === post.author;
-  };
+  // UPDATE (ONLY OWNER CHECK IN BACKEND)
+  const updatePost = async (id: string, data: Partial<Post>) => {
+    if (!user) return;
 
-  // ADD
-  const addPost = (post: Post) => {
-    setPosts((prev) => [
-      { ...post, status: "Just posted" },
-      ...prev,
-    ]);
-  };
+    const updated = await postService.update(
+      id,
+      data,
+      Number(user.id)
+    );
 
-  // DELETE (OWNER ONLY)
-  const deletePost = (id: string) => {
     setPosts((prev) =>
-      prev.filter((p) => {
-        if (p.id !== id) return true;
-
-        const target = prev.find((x) => x.id === id);
-        if (!target) return true;
-
-        return isOwner(target); // 🔐 guard
-      })
+      prev.map((p) => (p.id === id ? updated : p))
     );
   };
 
-  // UPDATE (OWNER ONLY)
-  const updatePost = (id: string, data: Partial<Post>) => {
-    setPosts((prev) =>
-      prev.map((p) => {
-        if (p.id !== id) return p;
-        if (!isOwner(p)) return p; // 🔐 guard
+  // DELETE
+  const deletePost = async (id: string) => {
+    if (!user) return;
 
-        return { ...p, ...data };
-      })
-    );
+    await postService.remove(id, Number(user.id));
+
+    setPosts((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // LIKE
+  // LIKE / DISLIKE (DOAR UI SAU IGNORE BACKEND)
   const likePost = (id: string) => {
     setPosts((prev) =>
       prev.map((p) =>
@@ -59,7 +57,6 @@ export function usePosts() {
     );
   };
 
-  // DISLIKE
   const dislikePost = (id: string) => {
     setPosts((prev) =>
       prev.map((p) =>
@@ -75,6 +72,5 @@ export function usePosts() {
     deletePost,
     likePost,
     dislikePost,
-    canEdit,
   };
 }
