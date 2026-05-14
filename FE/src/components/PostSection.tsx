@@ -8,8 +8,8 @@ export default function PostSection() {
     addPost,
     updatePost,
     deletePost,
-    likePost,
-    dislikePost,
+    // likePost,
+    // dislikePost,
     canEdit,
   } = usePosts();
 
@@ -26,8 +26,8 @@ export default function PostSection() {
           post={post}
           onEdit={updatePost}
           onDelete={deletePost}
-          onLike={likePost}
-          onDislike={dislikePost}
+          // onLike={likePost}
+          // onDislike={dislikePost}
           canEdit={canEdit}
         />
       ))}

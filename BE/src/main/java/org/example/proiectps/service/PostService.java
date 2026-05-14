@@ -1,86 +1,99 @@
 package org.example.proiectps.service;
 
-
+import lombok.RequiredArgsConstructor;
+import org.example.proiectps.dto.PostRequestDTO;
+import org.example.proiectps.dto.PostResponseDTO;
 import org.example.proiectps.entity.Post;
 import org.example.proiectps.entity.User;
 import org.example.proiectps.repository.PostRepository;
 import org.example.proiectps.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-
+@RequiredArgsConstructor
 public class PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    // CREATE
+    public PostResponseDTO addPost(PostRequestDTO dto, Long userId) {
 
-    public Post addPost(Post post, Long userId) {
         User author = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
+        Post post = new Post();
         post.setAuthor(author);
+        post.setTitle(dto.getTitle());
+        post.setText(dto.getText());
+        post.setImage(dto.getImage());
         post.setDate(LocalDateTime.now());
 
-        return postRepository.save(post);
+        return mapToDTO(postRepository.save(post));
     }
 
-    public List<Post> getAllPosts()
-    {
-        List<Post> posts = postRepository.findAllByOrderByDateDesc();
-        return posts;
+    // READ ALL
+    public List<PostResponseDTO> getAllPosts() {
+        return postRepository.findAllByOrderByDateDesc()
+                .stream()
+                .map(this::mapToDTO)
+                .toList();
     }
 
-    public Post getPostById(Long id)
-    {
-        Optional<Post> post = postRepository.findById(id);
-
-        if(post.isPresent())
-        {
-            return post.get();
-        }
-
-        return null;
-
-    }
-
-    public Post updatePost(Post post, Long userId) {
-
-        Post existingPost = postRepository.findById(post.getPostId())
+    // READ BY ID
+    public PostResponseDTO getPostById(Long id) {
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        // verificare owner
-        if (!existingPost.getAuthor().getUserId().equals(userId)) {
-            throw new RuntimeException("You are not allowed to update this post");
-        }
-
-        // update
-        existingPost.setTitle(post.getTitle());
-        existingPost.setText(post.getText());
-        existingPost.setImage(post.getImage());
-
-        return postRepository.save(existingPost);
+        return mapToDTO(post);
     }
 
+    // UPDATE
+    public PostResponseDTO updatePost(Long id, PostRequestDTO dto, Long userId) {
+
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (!post.getAuthor().getUserId().equals(userId)) {
+            throw new RuntimeException("Not allowed");
+        }
+
+        post.setTitle(dto.getTitle());
+        post.setText(dto.getText());
+        post.setImage(dto.getImage());
+
+        return mapToDTO(postRepository.save(post));
+    }
+
+    // DELETE
     public void deletePost(Long id, Long userId) {
-        Post existingPost = postRepository.findById(id)
+
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
-        if(!existingPost.getAuthor().getUserId().equals(userId)) {
-            throw new RuntimeException("You are not allowed to delete this post");
+
+        if (!post.getAuthor().getUserId().equals(userId)) {
+            throw new RuntimeException("Not allowed");
         }
 
-        postRepository.delete(existingPost);
+        postRepository.delete(post);
     }
 
+    // MAPPER
+    private PostResponseDTO mapToDTO(Post post) {
 
+        PostResponseDTO dto = new PostResponseDTO();
 
+        dto.setId(post.getPostId().toString());
+        dto.setAuthor(post.getAuthor().getUsername());
+        dto.setTitle(post.getTitle());
+        dto.setText(post.getText());
+        dto.setImage(post.getImage());
+        dto.setCreatedAt(post.getDate().toString());
+        dto.setStatus(post.getStatus().name());
 
-
+        return dto;
+    }
 }

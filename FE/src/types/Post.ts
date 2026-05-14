@@ -17,6 +17,6 @@ export type Post = {
 
   status: PostStatus;
 
-  likes: number;
-  dislikes: number;
+  //likes: number;
+  //dislikes: number;
 };

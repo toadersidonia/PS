@@ -4,7 +4,6 @@ import { useAuth } from "../hooks/useAuth";
 
 type Props = {
   onAddPost: (post: {
-    id: string;
     author: string;
     title: string;
     text: string;
@@ -30,7 +29,6 @@ export default function PostComposer({ onAddPost }: Props) {
     if (!title || !text || !user) return;
 
     onAddPost({
-      id: crypto.randomUUID(),
       author: user.username,
       title,
       text,

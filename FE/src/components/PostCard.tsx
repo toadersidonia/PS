@@ -8,8 +8,8 @@ type Props = {
   onEdit: (id: string, data: Partial<Post>) => void;
   onDelete: (id: string) => void;
 
-  onLike: (id: string) => void;
-  onDislike: (id: string) => void;
+  // onLike: (id: string) => void;
+  // onDislike: (id: string) => void;
 
   canEdit: (post: Post) => boolean;
 };
@@ -18,8 +18,8 @@ export default function PostCard({
   post,
   onEdit,
   onDelete,
-  onLike,
-  onDislike,
+  // onLike,
+  // onDislike,
   canEdit,
 }: Props) {
 
@@ -32,7 +32,7 @@ export default function PostCard({
 
   const isOwner = canEdit(post);
 
-  const score = post.likes - post.dislikes;
+  //const score = post.likes - post.dislikes;
 
   const save = () => {
     if (!title.trim() || !text.trim()) return;
@@ -171,13 +171,13 @@ export default function PostCard({
 
           <div className="flex items-center gap-5">
 
-            <button onClick={() => onLike(post.id)}>
+            {/* <button onClick={() => onLike(post.id)}>
               ❤️ {post.likes}
             </button>
 
             <button onClick={() => onDislike(post.id)}>
               👎 {post.dislikes}
-            </button>
+            </button> */}
 
             <button onClick={() => setShowComments((s) => !s)}>
               💬
@@ -185,9 +185,9 @@ export default function PostCard({
 
           </div>
 
-          <span className="text-xs text-gray-400">
+          {/* <span className="text-xs text-gray-400">
             score: {score}
-          </span>
+          </span> */}
 
         </div>
       )}

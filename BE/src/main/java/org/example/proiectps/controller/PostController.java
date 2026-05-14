@@ -1,46 +1,51 @@
 package org.example.proiectps.controller;
 
-import org.example.proiectps.entity.Post;
+import lombok.RequiredArgsConstructor;
+import org.example.proiectps.dto.PostRequestDTO;
+import org.example.proiectps.dto.PostResponseDTO;
 import org.example.proiectps.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
+
 public class PostController {
+
     @Autowired
     private PostService postService;
 
     // CREATE
     @PostMapping
-    public Post addPost(@RequestBody Post post, @RequestParam Long userId) {
-        return postService.addPost(post, userId);
+    public PostResponseDTO addPost(
+            @RequestBody PostRequestDTO dto,
+            @RequestParam Long userId
+    ) {
+        return postService.addPost(dto, userId);
     }
 
     // READ ALL
     @GetMapping
-    List<Post> getAllPosts(){ return postService.getAllPosts(); }
+    public List<PostResponseDTO> getAllPosts() {
+        return postService.getAllPosts();
+    }
 
     // READ BY ID
     @GetMapping("/{id}")
-    public Post getPostById(@PathVariable Long id) {
+    public PostResponseDTO getPostById(@PathVariable Long id) {
         return postService.getPostById(id);
     }
 
-    //UPDATE
+    // UPDATE
     @PutMapping("/{id}")
-    public Post updatePost(
+    public PostResponseDTO updatePost(
             @PathVariable Long id,
-            @RequestBody Post post,
+            @RequestBody PostRequestDTO dto,
             @RequestParam Long userId
     ) {
-        post.setPostId(id);
-        Post updatedPost = postService.updatePost(post, userId);
-        //return "Post with ID " + updatedPost.getPostId() + " was updated";
-        return post;
+        return postService.updatePost(id, dto, userId);
     }
 
     // DELETE
@@ -51,6 +56,4 @@ public class PostController {
     ) {
         postService.deletePost(id, userId);
     }
-
-
 }
