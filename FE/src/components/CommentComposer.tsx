@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SparklesIcon } from "@heroicons/react/24/solid";
 
 type Props = {
   onAddComment: (
@@ -33,12 +34,13 @@ export default function CommentComposer({
 
       {!open ? (
 
-        <button
-          onClick={() => setOpen(true)}
-          className="w-full py-2 rounded-2xl bg-white/60 border border-black/5 text-gray-500 hover:bg-pink-50 transition"
-        >
-          Add comment ✨
-        </button>
+      <button
+        onClick={() => setOpen(true)}
+        className="w-full py-2 rounded-2xl bg-white/60 border border-black/5 text-gray-500 hover:bg-pink-50 transition flex items-center justify-center gap-2"
+      >
+        Add comment
+        <SparklesIcon className="w-5 h-5 text-purple-500" />
+      </button>
 
       ) : (
 
@@ -82,9 +84,10 @@ export default function CommentComposer({
 
             <button
               onClick={submit}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white flex items-center justify-center gap-2"
             >
-              Post ✨
+              Post
+              <SparklesIcon className="w-5 h-5 text-yellow-300" />
             </button>
 
           </div>

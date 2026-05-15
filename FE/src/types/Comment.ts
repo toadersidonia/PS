@@ -3,6 +3,8 @@ export type Comment = {
 
   postId: string;
 
+  authorId: string;
+  
   author: string;
 
   text: string;
@@ -11,6 +13,6 @@ export type Comment = {
 
   createdAt: string;
 
-  likes: number;
-  dislikes: number;
+  //likes: number;
+  //dislikes: number;
 };

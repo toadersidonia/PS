@@ -13,12 +13,10 @@ export default function CommentSection({ postId }: Props) {
   const {
     comments,
     addComment,
-    like,
-    dislike,
     remove,
     editComment,
     isOwner,
-  } = useComments(postId, user?.username ?? null);
+  } = useComments(postId, user ?? null);
 
   return (
     <div className="mt-4 pt-4 border-t border-black/5">
@@ -30,8 +28,6 @@ export default function CommentSection({ postId }: Props) {
           <CommentCard
             key={c.id}
             comment={c}
-            onLike={like}
-            onDislike={dislike}
             onDelete={remove}
             onEdit={editComment}
             canEdit={isOwner}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { PostStatus } from "../types/Post";
 import { useAuth } from "../hooks/useAuth";
+import { SparklesIcon } from "@heroicons/react/24/solid";
 
 type Props = {
   onAddPost: (post: {
@@ -53,7 +54,7 @@ export default function PostComposer({ onAddPost }: Props) {
           onClick={() => setOpen(true)}
           className="w-full bg-pink-50 hover:bg-pink-100 transition rounded-full px-5 py-3 text-left text-gray-500"
         >
-          What are you sharing today? ✨
+          What are you sharing today? <SparklesIcon className="w-5 h-5 text-purple-500" />
         </button>
       ) : (
         <div className="space-y-4">
@@ -81,15 +82,16 @@ export default function PostComposer({ onAddPost }: Props) {
 
           <div className="flex justify-end gap-3">
 
-            <button onClick={() => setOpen(false)}>
+            <button onClick={() => setOpen(false)} 
+              className="px-4 py-2 rounded-xl text-gray-500 hover:bg-gray-100 transition">
               Cancel
             </button>
 
             <button
               onClick={submitPost}
-              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-5 py-2 rounded-xl"
+              className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-5 py-2 rounded-xl"
             >
-              Publish ✨
+              Publish <SparklesIcon className="w-5 h-5 text-yellow-500" />
             </button>
 
           </div>

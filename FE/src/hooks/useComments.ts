@@ -1,66 +1,68 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Comment } from "../types/Comment";
-import { mockComments } from "../data/mockComments";
+import { commentService } from "../services/commentService";
 
-export function useComments(postId: string, currentUser: string | null) {
-  const [comments, setComments] = useState<Comment[]>(
-    mockComments.filter((c) => c.postId === postId)
-  );
+export function useComments(
+  postId: string,
+  currentUser: { id: string; username: string } | null
+) {
+  const [comments, setComments] = useState<Comment[]>([]);
 
-  //  helper ownership
+  // LOAD
+  useEffect(() => {
+    commentService.getByPost(postId).then(setComments);
+  }, [postId]);
+
+  // OWNER CHECK
   const isOwner = (comment: Comment) =>
-    comment.author === currentUser;
+    comment.authorId === currentUser?.id;
 
   // ADD
-  const addComment = (text: string, image?: string) => {
+  const addComment = async (text: string, image?: string) => {
     if (!currentUser) return;
 
-    const newComment: Comment = {
-      id: crypto.randomUUID(),
+    const created = await commentService.create(
       postId,
-      author: currentUser,
-      text,
-      image,
-      createdAt: new Date().toISOString(),
-      likes: 0,
-      dislikes: 0,
-    };
+      {
+        text,
+        image,
+        authorId: currentUser.id,
+        author: currentUser.username,
+      },
+      currentUser.id
+    );
 
-    setComments((prev) => [newComment, ...prev]);
+    setComments((prev) => [created, ...prev]);
   };
 
-  // LIKE
-  const like = (id: string) => {
+  // DELETE
+  const remove = async (id: string) => {
+    if (!currentUser) return;
+
+    await commentService.remove(id, currentUser.id);
+
     setComments((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, likes: c.likes + 1 } : c
-      )
+      prev.filter((c) => c.id !== id)
     );
   };
 
-  // DISLIKE
-  const dislike = (id: string) => {
+  // EDIT
+  const editComment = async (
+    id: string,
+    text: string,
+    image?: string
+  ) => {
+    if (!currentUser) return;
+
+    const updated = await commentService.update(
+      id,
+      { text, image },
+      currentUser.id
+    );
+
     setComments((prev) =>
       prev.map((c) =>
-        c.id === id ? { ...c, dislikes: c.dislikes + 1 } : c
-      )
-    );
-  };
-
-  // DELETE 
-  const remove = (id: string) => {
-    setComments((prev) =>
-      prev.filter((c) => !(c.id === id && isOwner(c)))
-    );
-  };
-
-  // EDIT 
-  const editComment = (id: string, text: string, image?: string) => {
-    setComments((prev) =>
-      prev.map((c) =>
-        c.id === id && isOwner(c)
-          ? { ...c, text, image }
-          : c
+        c.id === id ? updated : c
       )
     );
   };
@@ -68,8 +70,6 @@ export function useComments(postId: string, currentUser: string | null) {
   return {
     comments,
     addComment,
-    like,
-    dislike,
     remove,
     editComment,
     isOwner,

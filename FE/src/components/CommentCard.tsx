@@ -1,12 +1,16 @@
 import { useState } from "react";
 import type { Comment } from "../types/Comment";
 import { useAuth } from "../hooks/useAuth";
+import { HeartIcon } from "@heroicons/react/24/solid";
+import { HandThumbDownIcon } from "@heroicons/react/24/solid";
+import { SparklesIcon } from "@heroicons/react/24/solid";
+
 
 type Props = {
   comment: Comment;
 
-  onLike: (id: string) => void;
-  onDislike: (id: string) => void;
+  // onLike: (id: string) => void;
+  // onDislike: (id: string) => void;
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, image?: string) => void;
   canEdit: (comment: Comment) => boolean;
@@ -14,8 +18,8 @@ type Props = {
 
 export default function CommentCard({
   comment,
-  onLike,
-  onDislike,
+  // onLike,
+  // onDislike,
   onDelete,
   onEdit,
   canEdit,
@@ -97,7 +101,7 @@ export default function CommentCard({
               onClick={save}
               className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white"
             >
-              Save ✨
+              Save <SparklesIcon className="w-5 h-5 text-purple-500" />
             </button>
           </div>
         </div>
@@ -114,19 +118,20 @@ export default function CommentCard({
             />
           )}
 
-          <div className="flex gap-4 mt-3 text-sm">
+          {/* <div className="flex gap-4 mt-3 text-sm">
             <button onClick={() => onLike(comment.id)}>
-              ❤️ {comment.likes}
+              <HeartIcon className="h-5 w-5 text-pink-500" />
+              {comment.likes}
             </button>
 
             <button onClick={() => onDislike(comment.id)}>
-              👎 {comment.dislikes}
+               <HandThumbDownIcon className="w-5 h-5 text-gray-500" />{comment.dislikes}
             </button>
 
             <span className="ml-auto text-xs text-gray-400">
               score: {comment.likes - comment.dislikes}
             </span>
-          </div>
+          </div> */}
         </>
       )}
     </div>

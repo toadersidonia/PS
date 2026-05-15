@@ -1,6 +1,11 @@
 import { useState } from "react";
 import CommentSection from "./CommentSection";
 import type { Post } from "../types/Post";
+import { HeartIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { HandThumbDownIcon } from "@heroicons/react/24/solid";
+import { SparklesIcon } from "@heroicons/react/24/solid";
+import { ChatBubbleLeftIcon } from "@heroicons/react/24/solid";
+import { PencilIcon } from "@heroicons/react/24/solid";
 
 type Props = {
   post: Post;
@@ -85,16 +90,16 @@ export default function PostCard({
 
             <button
               onClick={() => setEditing(true)}
-              className="text-xs text-gray-500 hover:text-black transition"
+              className="p-2 rounded-xl text-purple-500 hover:text-purple-700 hover:bg-purple-50 transition flex items-center"
             >
-              ✏️
+              <PencilIcon className="w-5 h-5" />
             </button>
 
             <button
               onClick={() => onDelete(post.id)}
-              className="text-xs text-gray-400 hover:text-red-500 transition"
+              className="fflex items-center gap-2 px-4 py-2 rounded-xl text-pink-400 hover:text-pink-600 transition"
             >
-              🗑️
+              <TrashIcon className="w-5 h-5" />
             </button>
 
           </div>
@@ -133,16 +138,16 @@ export default function PostCard({
 
               <button
                 onClick={cancel}
-                className="px-4 py-2 rounded-xl text-gray-500 hover:bg-gray-100 transition"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:bg-gray-100 transition"
               >
                 Cancel
               </button>
 
               <button
                 onClick={save}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white px-5 py-2 rounded-xl"
               >
-                Save ✨
+                Save <SparklesIcon className="w-5 h-5 text-yellow-500" />
               </button>
 
             </div>
@@ -172,16 +177,20 @@ export default function PostCard({
           <div className="flex items-center gap-5">
 
             {/* <button onClick={() => onLike(post.id)}>
-              ❤️ {post.likes}
+              <HeartIcon className="h-5 w-5 text-pink-500" />
+              {post.likes}
             </button>
 
             <button onClick={() => onDislike(post.id)}>
-              👎 {post.dislikes}
+              <HandThumbDownIcon className="w-5 h-5 text-gray-500" />{post.dislikes}
             </button> */}
 
-            <button onClick={() => setShowComments((s) => !s)}>
-              💬
-            </button>
+            <button
+                onClick={() => setShowComments((s) => !s)}
+                className="p-2 rounded-xl hover:bg-pink-50 transition"
+              >
+                <ChatBubbleLeftIcon className="w-5 h-5 text-pink-500 hover:text-pink-600 transition" />
+              </button>
 
           </div>
 
