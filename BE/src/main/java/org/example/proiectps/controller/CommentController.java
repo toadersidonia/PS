@@ -1,6 +1,7 @@
 package org.example.proiectps.controller;
 
-import org.example.proiectps.entity.Comment;
+import org.example.proiectps.dto.CommentRequestDTO;
+import org.example.proiectps.dto.CommentResponseDTO;
 import org.example.proiectps.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,31 +15,44 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    // CREATE
     @PostMapping
-    public Comment createComment(@RequestParam Long postId, @RequestParam Long userId, @RequestBody Comment comment) {
-        return commentService.createComment(comment, postId, userId);
+    public CommentResponseDTO createComment(
+            @RequestParam Long postId,
+            @RequestParam Long userId,
+            @RequestBody CommentRequestDTO dto
+    ) {
+        return commentService.createComment(dto, postId, userId);
     }
 
+    // GET BY POST
     @GetMapping("/post/{postId}")
-    public List<Comment> getPostComments(@PathVariable Long postId) {
+    public List<CommentResponseDTO> getPostComments(@PathVariable Long postId) {
         return commentService.retrieveComments(postId);
     }
 
+    // UPDATE
     @PutMapping("/{commentId}")
-    //la fel ca la delete commment in legatura cu userId
-    public Comment editComment(@PathVariable Long commentId, @RequestBody Comment comment, @RequestParam Long userId) {
-        comment.setCommId(commentId);
-        return commentService.updateComment(comment, userId);
+    public CommentResponseDTO editComment(
+            @PathVariable Long commentId,
+            @RequestBody CommentRequestDTO dto,
+            @RequestParam Long userId
+    ) {
+        return commentService.updateComment(commentId, dto, userId);
     }
 
+    // DELETE
     @DeleteMapping("/{commentId}")
-    //mometan trimtiem userId din request, dar cand facem partea de securitate va fi extras din sesiuena curenta
-    public void deleteComment(@PathVariable Long commentId, @RequestParam Long userId) {
+    public void deleteComment(
+            @PathVariable Long commentId,
+            @RequestParam Long userId
+    ) {
         commentService.deleteComment(commentId, userId);
     }
 
+    // GET ONE
     @GetMapping("/{commentId}")
-    public Comment getComment(@PathVariable Long commentId) {
+    public CommentResponseDTO getComment(@PathVariable Long commentId) {
         return commentService.getCommentById(commentId);
     }
 }

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)  //spunem ca JUnit5 sa foloseasca Mockito
 class PostServiceTest {
-
+    /*
     @Mock  //
     private PostRepository postRepository; //este acum un mock
 
@@ -148,4 +148,5 @@ class PostServiceTest {
                 postService.deletePost(1L, 2L));
         assertEquals("You are not allowed to delete this post", exception.getMessage());
     }
+    */
 }

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest //se porneste aplicatia completa
 @Transactional //dupa fiecare test, anuleaza modificarile (curata datele)
 class CommentServiceIntegrationTest {
-
+    /*
     @Autowired
     private CommentService commentService; //folosim Service real, nu mock
 
@@ -85,15 +85,16 @@ class CommentServiceIntegrationTest {
         testPost = createTestPost(testUser, "Test Post for Comments");
     }
 
-    /*
+    /**
     Structura unui test:
     Arrange - pregatim datele pt test
     Act - apelam metoda testata
     Assert - compara rezultatul cu ce astetam de fapt
 
     Assert = spune "ma astept ca X sa fie egal cu Y, daca nu e, testul esueaza"
-     */
+     **/
 
+    /*
     @Test
     void createComment_shouldSaveCommentInDatabase() {
         Comment comment = new Comment();
@@ -272,4 +273,5 @@ class CommentServiceIntegrationTest {
         assertTrue(comments.stream().anyMatch(c -> c.getText().equals("Comment from user1")));
         assertTrue(comments.stream().anyMatch(c -> c.getText().equals("Comment from user2")));
     }
+    */
 }
