@@ -8,6 +8,3 @@ export * from "./Auth";
 
 //cand vrem sa exportam mai multe fisiere, de exmeplu
 //import { Post, Comment, User } from "../types";
-
-//cand vrem sa exportam mai multe fisiere, de exmeplu
-//import { Post, Comment, User } from "../types";

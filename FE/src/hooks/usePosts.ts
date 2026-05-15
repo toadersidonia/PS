@@ -7,17 +7,14 @@ export function usePosts() {
   const { user } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
 
-  // LOAD
   useEffect(() => {
     postService.getAll().then(setPosts);
   }, []);
 
-  // OWNERSHIP CHECK (UI ONLY)
   const canEdit = (post: Post) => {
     return user?.username === post.author;
   };
 
-  // CREATE
   const addPost = async (post: Partial<Post>) => {
     if (!user) return;
 
@@ -26,7 +23,6 @@ export function usePosts() {
     setPosts((prev) => [created, ...prev]);
   };
 
-  // UPDATE (backend va valida ownership)
   const updatePost = async (id: string, data: Partial<Post>) => {
     if (!user) return;
 
@@ -37,7 +33,6 @@ export function usePosts() {
     );
   };
 
-  // DELETE
   const deletePost = async (id: string) => {
     if (!user) return;
 
@@ -46,7 +41,6 @@ export function usePosts() {
     setPosts((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // LIKE
   // const likePost = (id: string) => {
   //   setPosts((prev) =>
   //     prev.map((p) =>

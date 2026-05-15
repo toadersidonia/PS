@@ -1,9 +1,3 @@
-// export type CommentVote = {
-//   userId: string;
-//   commentId: string;
-//   liked: boolean;
-// };
-
 export type CommentVote = {
   id: string;
 

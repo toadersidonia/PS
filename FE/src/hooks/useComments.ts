@@ -8,16 +8,13 @@ export function useComments(
 ) {
   const [comments, setComments] = useState<Comment[]>([]);
 
-  // LOAD
   useEffect(() => {
     commentService.getByPost(postId).then(setComments);
   }, [postId]);
 
-  // OWNER CHECK
   const isOwner = (comment: Comment) =>
-    comment.authorId === currentUser?.id;
+   Number(comment.authorId) === Number(currentUser?.id);
 
-  // ADD
   const addComment = async (text: string, image?: string) => {
     if (!currentUser) return;
 
@@ -35,7 +32,6 @@ export function useComments(
     setComments((prev) => [created, ...prev]);
   };
 
-  // DELETE
   const remove = async (id: string) => {
     if (!currentUser) return;
 
@@ -46,7 +42,6 @@ export function useComments(
     );
   };
 
-  // EDIT
   const editComment = async (
     id: string,
     text: string,

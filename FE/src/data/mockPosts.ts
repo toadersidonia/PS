@@ -1,5 +1,6 @@
 import type { Post } from "../types/Post";
 
+/*
 export const mockPosts: Post[] = [
   {
     id: "1",
@@ -7,7 +8,7 @@ export const mockPosts: Post[] = [
     author: "Alex",
 
     title: "First post",
-    text: "Hello everyone ✨",
+    text: "Hello everyone",
 
     image: "https://picsum.photos/600/400",
 
@@ -35,3 +36,4 @@ export const mockPosts: Post[] = [
     dislikes: 0,
   },
 ];
+*/

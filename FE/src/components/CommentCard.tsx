@@ -58,14 +58,14 @@ export default function CommentCard({
           <div className="flex gap-3 text-xs">
             <button
               onClick={() => setEditing(true)}
-              className="text-blue-500 hover:underline"
+              className="text-purple-500 hover:text-purple-700 hover:underline transition"
             >
               edit
             </button>
 
             <button
               onClick={() => onDelete(comment.id)}
-              className="text-red-400 hover:underline"
+              className="text-pink-500 hover:text-red-700 hover:underline transition"
             >
               delete
             </button>
@@ -99,9 +99,9 @@ export default function CommentCard({
 
             <button
               onClick={save}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white flex items-center gap-2"
             >
-              Save <SparklesIcon className="w-5 h-5 text-purple-500" />
+              Save <SparklesIcon className="w-5 h-5 text-yellow-500" />
             </button>
           </div>
         </div>
