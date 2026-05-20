@@ -33,4 +33,28 @@ export const commentService = {
       `/comments/${id}?userId=${userId}`
     );
   },
+
+// vote: async (
+//   commentId: string,
+//   userId: string,
+//   type: "LIKE" | "DISLIKE"
+// ): Promise<Comment> => {
+// return api.put<Comment>(
+//   `/comments/${commentId}/vote?userId=${userId}&type=${type}`,
+//   {}
+// );
+// },
+vote: async (
+  commentId: string,
+  userId: string,
+  type: "LIKE" | "DISLIKE"
+): Promise<{
+  comment: Comment;
+  voterScore: number;
+}> => {
+  return api.put(
+    `/comments/${commentId}/vote?userId=${userId}&type=${type}`,
+    {}
+  );
+},
 };

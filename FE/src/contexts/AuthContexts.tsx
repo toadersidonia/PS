@@ -19,6 +19,8 @@ interface AuthContextType {
   login: (data: LoginRequest) => Promise<void>;
   register: (data: RegisterRequest) => Promise<void>;
   logout: () => void;
+
+  setUser: React.Dispatch<React.SetStateAction<User | null>>; 
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -63,6 +65,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     register,
     logout,
+    setUser,
   };
 
   return (

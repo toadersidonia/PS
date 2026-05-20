@@ -36,7 +36,7 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole("USER");
-        user.setScore(0L);
+        user.setScore(0.0d);
         user.setBanned(false);
 
         User savedUser = userRepository.save(user);

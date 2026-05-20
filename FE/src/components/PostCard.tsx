@@ -1,11 +1,18 @@
 import { useState } from "react";
 import CommentSection from "./CommentSection";
+import PostTagSelect, { TagOption } from "./PostTagSelect";
 import type { Post } from "../types/Post";
-import { HeartIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { HandThumbDownIcon } from "@heroicons/react/24/solid";
-import { SparklesIcon } from "@heroicons/react/24/solid";
-import { ChatBubbleLeftIcon } from "@heroicons/react/24/solid";
-import { PencilIcon } from "@heroicons/react/24/solid";
+import { useAuth } from "../hooks/useAuth";
+import { LockClosedIcon } from "@heroicons/react/24/solid";
+
+import {
+  HeartIcon,
+  TrashIcon,
+  HandThumbDownIcon,
+  SparklesIcon,
+  ChatBubbleLeftIcon,
+  PencilIcon,
+} from "@heroicons/react/24/solid";
 
 type Props = {
   post: Post;
@@ -13,31 +20,56 @@ type Props = {
   onEdit: (id: string, data: Partial<Post>) => void;
   onDelete: (id: string) => void;
 
-  // onLike: (id: string) => void;
-  // onDislike: (id: string) => void;
+  onLike: (id: string) => void;
+  onDislike: (id: string) => void;
 
   canEdit: (post: Post) => boolean;
+
+  onCloseComments: (id: string) => void;
 };
 
 export default function PostCard({
   post,
   onEdit,
   onDelete,
-  // onLike,
-  // onDislike,
+  onLike,
+  onDislike,
   canEdit,
+  onCloseComments
 }: Props) {
+  const { user } = useAuth();
+
+  const statusLabel: Record<Post["status"], string> = {
+    JUST_POSTED: "JUST POSTED",
+    FIRST_REACTION: "FIRST REACTION",
+    EXPIRED: "EXPIRED",
+  };
+
+  const statusColor: Record<Post["status"], string> = {
+    JUST_POSTED: "bg-blue-100 text-blue-600",
+    FIRST_REACTION: "bg-yellow-100 text-yellow-700",
+    EXPIRED: "bg-red-100 text-red-600",
+  };
+
+  const isExpired = post.status === "EXPIRED";
 
   const [showComments, setShowComments] = useState(false);
-
   const [editing, setEditing] = useState(false);
+
   const [title, setTitle] = useState(post.title);
   const [text, setText] = useState(post.text);
   const [image, setImage] = useState(post.image || "");
 
-  const isOwner = canEdit(post);
+  const [tags, setTags] = useState<string[]>(post.tags || []);
 
-  //const score = post.likes - post.dislikes;
+  const [warning, setWarning] = useState<string | null>(null);
+
+  const isOwner = user?.username === post.author;
+
+  const showWarning = (msg: string) => {
+    setWarning(msg);
+    setTimeout(() => setWarning(null), 2500);
+  };
 
   const save = () => {
     if (!title.trim() || !text.trim()) return;
@@ -46,6 +78,7 @@ export default function PostCard({
       title,
       text,
       image: image.trim() ? image : undefined,
+      tags,
     });
 
     setEditing(false);
@@ -55,8 +88,14 @@ export default function PostCard({
     setTitle(post.title);
     setText(post.text);
     setImage(post.image || "");
+    setTags(post.tags || []);
     setEditing(false);
   };
+
+  const tagOptions: TagOption[] = tags.map((t) => ({
+    value: t,
+    label: t,
+  }));
 
   return (
     <div className="mb-5 rounded-2xl bg-white/70 backdrop-blur-xl shadow-md overflow-hidden">
@@ -69,43 +108,57 @@ export default function PostCard({
         </div>
 
         <div className="flex flex-col">
-
           <div className="flex items-center gap-2">
             <span className="font-semibold">{post.author}</span>
 
-            <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-500">
-              {post.status}
+            <span className={`text-xs px-2 py-1 rounded-full ${statusColor[post.status]}`}>
+              {statusLabel[post.status]}
             </span>
           </div>
 
           <span className="text-xs text-gray-400">
             {new Date(post.createdAt).toLocaleString()}
           </span>
-
         </div>
 
         {/* ACTIONS */}
-        {isOwner && (
+        {canEdit(post) && (
           <div className="ml-auto flex gap-2">
 
             <button
+              onClick={() => {
+                if (!confirm("Block comments for this post?")) return;
+                onCloseComments(post.id);
+              }}
+              className="p-2 rounded-xl text-red-500 hover:bg-red-50"
+              title="Block comments"
+            >
+              <LockClosedIcon className="w-5 h-5" />
+            </button>
+
+            <button
               onClick={() => setEditing(true)}
-              className="p-2 rounded-xl text-purple-500 hover:text-purple-700 hover:bg-purple-50 transition flex items-center"
+              className="p-2 rounded-xl text-purple-500 hover:bg-purple-50"
             >
               <PencilIcon className="w-5 h-5" />
             </button>
 
             <button
               onClick={() => onDelete(post.id)}
-              className="fflex items-center gap-2 px-4 py-2 rounded-xl text-pink-400 hover:text-pink-600 transition"
+              className="p-2 rounded-xl text-pink-400 hover:bg-pink-50"
             >
               <TrashIcon className="w-5 h-5" />
             </button>
 
           </div>
         )}
-
       </div>
+
+      {warning && (
+        <div className="mx-4 mt-2 mb-2 px-3 py-2 rounded-xl bg-red-100 text-red-600 text-sm">
+          {warning}
+        </div>
+      )}
 
       {/* CONTENT */}
       <div className="px-4 pb-4">
@@ -134,30 +187,46 @@ export default function PostCard({
               className="w-full p-3 rounded-xl bg-white border border-black/10"
             />
 
+            <PostTagSelect
+              options={tagOptions}
+              value={tagOptions}
+              onChange={(vals) => setTags(vals.map((v) => v.value))}
+            />
+
             <div className="flex justify-end gap-2">
 
               <button
                 onClick={cancel}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:bg-gray-100 transition"
+                className="px-4 py-2 rounded-xl bg-gray-200"
               >
                 Cancel
               </button>
 
               <button
                 onClick={save}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white px-5 py-2 rounded-xl"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white flex items-center gap-2"
               >
-                Save <SparklesIcon className="w-5 h-5 text-yellow-500" />
+                Save <SparklesIcon className="w-5 h-5" />
               </button>
 
             </div>
-
           </div>
         ) : (
           <>
             <h2 className="text-lg font-bold">{post.title}</h2>
 
             <p className="text-sm text-gray-600 mt-1">{post.text}</p>
+
+            <div className="flex flex-wrap gap-2 mt-3">
+              {post.tags?.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-1 text-xs rounded-full bg-pink-100 text-pink-600"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
 
             {post.image && (
               <img
@@ -167,44 +236,65 @@ export default function PostCard({
             )}
           </>
         )}
-
       </div>
 
       {/* ACTIONS */}
       {!editing && (
-        <div className="flex items-center justify-between px-4 py-4 border-t border-black/5">
+        <div className="flex items-center justify-between px-4 py-4 border-t">
 
           <div className="flex items-center gap-5">
 
-            {/* <button onClick={() => onLike(post.id)}>
+            <button
+              onClick={() => {
+                if (isOwner) {
+                  showWarning("Nu poți da like la propria postare");
+                  return;
+                }
+                onLike(post.id);
+              }}
+              className="flex items-center gap-1"
+            >
               <HeartIcon className="h-5 w-5 text-pink-500" />
               {post.likes}
             </button>
 
-            <button onClick={() => onDislike(post.id)}>
-              <HandThumbDownIcon className="w-5 h-5 text-gray-500" />{post.dislikes}
-            </button> */}
+            <button
+              onClick={() => {
+                if (isOwner) {
+                  showWarning("Nu poți da dislike la propria postare");
+                  return;
+                }
+                onDislike(post.id);
+              }}
+              className="flex items-center gap-1"
+            >
+              <HandThumbDownIcon className="w-5 h-5 text-gray-500" />
+              {post.dislikes}
+            </button>
 
             <button
-                onClick={() => setShowComments((s) => !s)}
-                className="p-2 rounded-xl hover:bg-pink-50 transition"
-              >
-                <ChatBubbleLeftIcon className="w-5 h-5 text-pink-500 hover:text-pink-600 transition" />
-              </button>
+              onClick={() => {
+                if (isExpired) {
+                  showWarning("Comentariile sunt blocate pentru această postare");
+                  return;
+                }
+                setShowComments((s) => !s);
+              }}
+              className="flex items-center gap-1"
+            >
+              <ChatBubbleLeftIcon className="w-5 h-5 text-pink-500" />
+            </button>
 
           </div>
 
-          {/* <span className="text-xs text-gray-400">
-            score: {score}
-          </span> */}
+          <span className="text-xs text-gray-400">
+            score: {post.score}
+          </span>
 
         </div>
       )}
 
-      {showComments && (
-        <CommentSection postId={post.id} />
-      )}
-
+      {showComments && <CommentSection postId={post.id} />}
     </div>
   );
 }

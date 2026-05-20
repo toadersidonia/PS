@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -17,4 +18,8 @@ public class PostResponseDTO {
     private String image;
     private String createdAt;
     private String status;
+    private long likes;
+    private long dislikes;
+    private double score;
+    private List<String> tags;
 }

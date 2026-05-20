@@ -1,7 +1,7 @@
 export type PostStatus =
-  | "Just posted"
-  | "First reactions"
-  | "Expired";
+  | "JUST_POSTED"
+  | "FIRST_REACTION"
+  | "EXPIRED";
 
 export type Post = {
   id: string;
@@ -17,6 +17,10 @@ export type Post = {
 
   status: PostStatus;
 
-  //likes: number;
-  //dislikes: number;
+  likes: number;
+  dislikes: number;
+
+  score: number;
+
+  tags?: string[];
 };

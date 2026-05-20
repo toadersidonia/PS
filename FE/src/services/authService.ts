@@ -68,4 +68,14 @@ export const authService = {
   isAuthenticated: (): boolean => {
     return !!localStorage.getItem(TOKEN_KEY);
   },
+
+  me: async () => {
+  const res = await api.get<AuthApiResponse>("/api/users/me");
+
+  return mapUserFromApi(res.user);
+},
+
+updateStoredUser: (user: any) => {
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+},
 };

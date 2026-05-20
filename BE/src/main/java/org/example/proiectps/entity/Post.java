@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.proiectps.enums.PostStatus;
@@ -40,16 +41,12 @@ public class Post {
     private PostStatus status=PostStatus.JUST_POSTED;
 
     ///TAGS
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "post_tags", //numele tabelului intermediar
-            joinColumns = @JoinColumn(name = "post_id"), //coloana care refera postul
-            inverseJoinColumns = @JoinColumn(name = "tag_id") //coloana care refera tagul
+            name = "post_tags",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-
     @JsonIgnore
-    private List<Tag> tags;
-
-
+    private List<Tag> tags = new ArrayList<>();
 }
-

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.proiectps.enums.VoteType;
 
 @Entity
 @Table(
@@ -31,5 +32,6 @@ public class CommentLike {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    private Boolean liked;
+    //private Boolean liked;
+    private VoteType type; // LIKE / DISLIKE / null
 }

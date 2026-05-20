@@ -56,4 +56,25 @@ public class PostController {
     ) {
         postService.deletePost(id, userId);
     }
+
+    @PostMapping("/{id}/like")
+    public PostResponseDTO likePost(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ) {
+        return postService.votePost(id, userId, true);
+    }
+
+    @PostMapping("/{id}/dislike")
+    public PostResponseDTO dislikePost(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ) {
+        return postService.votePost(id, userId, false);
+    }
+
+    @PostMapping("/{id}/close-comments")
+    public PostResponseDTO closeComments(@PathVariable Long id, @RequestParam Long userId) {
+        return postService.closeComments(id, userId);
+    }
 }

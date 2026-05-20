@@ -4,27 +4,27 @@ import { useAuth } from "../hooks/useAuth";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { HandThumbDownIcon } from "@heroicons/react/24/solid";
 import { SparklesIcon } from "@heroicons/react/24/solid";
-
+import { StarIcon } from "@heroicons/react/24/solid";
 
 type Props = {
   comment: Comment;
 
-  // onLike: (id: string) => void;
-  // onDislike: (id: string) => void;
+  onVote: (id: string, type: "LIKE" | "DISLIKE") => void;
+
   onDelete: (id: string) => void;
   onEdit: (id: string, text: string, image?: string) => void;
+
   canEdit: (comment: Comment) => boolean;
 };
 
 export default function CommentCard({
   comment,
-  // onLike,
-  // onDislike,
+  onVote,
   onDelete,
   onEdit,
   canEdit,
 }: Props) {
-  const { user } = useAuth();
+  //const { user } = useAuth();
 
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(comment.text);
@@ -45,8 +45,13 @@ export default function CommentCard({
       {/* HEADER */}
       <div className="flex justify-between items-center">
         <div>
-          <p className="text-sm font-semibold text-pink-500">
+          <p className="text-sm font-semibold text-pink-500 flex items-center gap-1">
             {comment.author}
+
+            <span className="text-xs text-yellow-500 flex items-center gap-1">
+              <StarIcon className="w-4 h-4 text-yellow-500" />
+              {comment.authorScore}
+            </span>
           </p>
 
           <p className="text-xs text-gray-400">
@@ -118,20 +123,32 @@ export default function CommentCard({
             />
           )}
 
-          {/* <div className="flex gap-4 mt-3 text-sm">
-            <button onClick={() => onLike(comment.id)}>
-              <HeartIcon className="h-5 w-5 text-pink-500" />
+          {/* VOTES */}
+          <div className="flex items-center gap-4 mt-3 text-sm">
+
+            {/* LIKE */}
+            <button
+              onClick={() => onVote(comment.id, "LIKE")}
+              className="flex items-center gap-1 text-pink-500 hover:text-pink-600 transition"
+            >
+              <HeartIcon className="w-5 h-5 text-pink-500" />
               {comment.likes}
             </button>
 
-            <button onClick={() => onDislike(comment.id)}>
-               <HandThumbDownIcon className="w-5 h-5 text-gray-500" />{comment.dislikes}
+            {/* DISLIKE */}
+            <button
+              onClick={() => onVote(comment.id, "DISLIKE")}
+              className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition"
+            >
+              <HandThumbDownIcon className="w-5 h-5 text-gray-500" />
+              {comment.dislikes}
             </button>
 
+            {/* SCORE */}
             <span className="ml-auto text-xs text-gray-400">
-              score: {comment.likes - comment.dislikes}
+              score: {comment.score}
             </span>
-          </div> */}
+          </div>
         </>
       )}
     </div>

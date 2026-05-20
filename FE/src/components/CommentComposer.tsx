@@ -13,7 +13,6 @@ export default function CommentComposer({
 }: Props) {
 
   const [open, setOpen] = useState(false);
-
   const [text, setText] = useState("");
   const [image, setImage] = useState("");
 

@@ -13,4 +13,8 @@ public class CommentResponseDTO {
     private String text;
     private String image;
     private String createdAt;
+    private Long likes;
+    private Long dislikes;
+    private Long score;
+    private Double authorScore;
 }

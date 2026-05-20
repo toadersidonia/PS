@@ -29,7 +29,7 @@ public class User {
 
     private String role; //user sau admin
 
-    private Long score;
+    private Double score;
 
     private boolean banned;
 }

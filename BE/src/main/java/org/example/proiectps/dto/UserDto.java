@@ -14,7 +14,7 @@ public class UserDto {
     private String username;
     private String email;
     private String role;
-    private Long score;
+    private Double score;
     private boolean banned;
 
     public static UserDto fromEntity(User user) {

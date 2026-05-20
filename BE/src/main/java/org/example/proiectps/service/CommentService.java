@@ -5,11 +5,16 @@ import org.example.proiectps.dto.CommentResponseDTO;
 import org.example.proiectps.entity.Comment;
 import org.example.proiectps.entity.Post;
 import org.example.proiectps.entity.User;
+import org.example.proiectps.enums.PostStatus;
+import org.example.proiectps.enums.VoteType;
+import org.example.proiectps.repository.CommentLikeRepository;
 import org.example.proiectps.repository.CommentRepository;
 import org.example.proiectps.repository.PostRepository;
 import org.example.proiectps.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,11 +31,21 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CommentLikeRepository commentLikeRepository;
+
+
     public CommentResponseDTO createComment(CommentRequestDTO dto, Long postId, Long userId) {
+
         User author = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
+
+        if (post.getStatus() == PostStatus.EXPIRED) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comments are closed");
+        }
 
         if ((dto.getText() == null || dto.getText().trim().isEmpty())
                 && (dto.getImage() == null || dto.getImage().isEmpty())) {
@@ -46,6 +61,11 @@ public class CommentService {
 
         Comment saved = commentRepository.save(comment);
 
+        if (post.getStatus() == PostStatus.JUST_POSTED) {
+            post.setStatus(PostStatus.FIRST_REACTION);
+            postRepository.save(post);
+        }
+
         return mapToDTO(saved);
     }
 
@@ -56,6 +76,7 @@ public class CommentService {
         return commentRepository.findByPostPostId(postId)
                 .stream()
                 .map(this::mapToDTO)
+                .sorted((a, b) -> Long.compare(b.getScore(), a.getScore()))
                 .toList();
     }
 
@@ -97,6 +118,9 @@ public class CommentService {
     private CommentResponseDTO mapToDTO(Comment c) {
         CommentResponseDTO dto = new CommentResponseDTO();
 
+        long likes = commentLikeRepository.countByCommentAndType(c, VoteType.LIKE);
+        long dislikes = commentLikeRepository.countByCommentAndType(c, VoteType.DISLIKE);
+
         dto.setId(c.getCommId());
         dto.setPostId(c.getPost().getPostId());
         dto.setAuthorId(c.getAuthor().getUserId());
@@ -104,6 +128,10 @@ public class CommentService {
         dto.setText(c.getText());
         dto.setImage(c.getImage());
         dto.setCreatedAt(c.getDate().toString());
+        dto.setLikes(likes);
+        dto.setDislikes(dislikes);
+        dto.setScore(likes - dislikes);
+        dto.setAuthorScore(c.getAuthor().getScore());
 
         return dto;
     }

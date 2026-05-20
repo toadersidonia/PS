@@ -25,7 +25,7 @@ public class UserService {
             user.setRole("USER");
         }
         if (user.getScore() == null) {
-            user.setScore(0L);
+            user.setScore(0.0d);
         }
 
         return userRepository.save(user);
