@@ -7,6 +7,8 @@ export type Post = {
   id: string;
 
   author: string;
+  
+  authorId:number;
 
   title: string;
   text: string;

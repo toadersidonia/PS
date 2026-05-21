@@ -1,10 +1,12 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import CommentSection from "./CommentSection";
 import PostTagSelect, { TagOption } from "./PostTagSelect";
 import type { Post } from "../types/Post";
 import { useAuth } from "../hooks/useAuth";
 import { LockClosedIcon } from "@heroicons/react/24/solid";
+import { StarIcon } from "@heroicons/react/24/solid";
+import { userService } from "../services/userService";
+import { useScore } from "../contexts/ScoreContext";
 
 import {
   HeartIcon,
@@ -17,17 +19,12 @@ import {
 
 type Props = {
   post: Post;
-
   onEdit: (id: string, data: Partial<Post>) => void;
   onDelete: (id: string) => void;
-
   onLike: (id: string) => void;
   onDislike: (id: string) => void;
-
   canEdit: (post: Post) => boolean;
-
   onCloseComments: (id: string) => void;
-
   onPostUpdate: (updatedPost: any) => void;
 };
 
@@ -38,10 +35,25 @@ export default function PostCard({
   onLike,
   onDislike,
   canEdit,
-  onCloseComments,  
-  onPostUpdate
+  onCloseComments,
+  onPostUpdate,
 }: Props) {
   const { user } = useAuth();
+  const { refreshKey } = useScore();
+
+  // STATES (corect ordine)
+  const [authorScore, setAuthorScore] = useState(0);
+  const [showComments, setShowComments] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [warning, setWarning] = useState<string | null>(null);
+
+  const [title, setTitle] = useState(post.title);
+  const [text, setText] = useState(post.text);
+  const [image, setImage] = useState(post.image || "");
+  const [tags, setTags] = useState<string[]>(post.tags || []);
+
+  const isOwner = user?.username === post.author;
+  const isExpired = post.status === "EXPIRED";
 
   const statusLabel: Record<Post["status"], string> = {
     JUST_POSTED: "JUST POSTED",
@@ -55,31 +67,27 @@ export default function PostCard({
     EXPIRED: "bg-red-100 text-red-600",
   };
 
-  const isExpired = post.status === "EXPIRED";
-
-  useEffect(() => {
-  if (isExpired) {
-    setShowComments(false);
-  }
-}, [isExpired]);
-
-  const [showComments, setShowComments] = useState(false);
-  const [editing, setEditing] = useState(false);
-
-  const [title, setTitle] = useState(post.title);
-  const [text, setText] = useState(post.text);
-  const [image, setImage] = useState(post.image || "");
-
-  const [tags, setTags] = useState<string[]>(post.tags || []);
-
-  const [warning, setWarning] = useState<string | null>(null);
-
-  const isOwner = user?.username === post.author;
-
   const showWarning = (msg: string) => {
     setWarning(msg);
     setTimeout(() => setWarning(null), 2500);
   };
+
+  // SCORE LOAD (CORECT)
+  useEffect(() => {
+    const loadScore = async () => {
+      if (!post?.authorId) return;
+
+      const s = await userService.getUserScore(post.authorId);
+      setAuthorScore(s);
+    };
+
+    loadScore();
+  }, [post?.authorId, refreshKey]);
+
+  // CLOSE COMMENTS ON EXPIRE
+  useEffect(() => {
+    if (isExpired) setShowComments(false);
+  }, [isExpired]);
 
   const save = () => {
     if (!title.trim() || !text.trim()) return;
@@ -118,17 +126,28 @@ export default function PostCard({
         </div>
 
         <div className="flex flex-col">
+
           <div className="flex items-center gap-2">
-            <span className="font-semibold">{post.author}</span>
+
+            <div className="flex items-center gap-1">
+              <span className="font-semibold">{post.author}</span>
+
+              <span className="text-xs text-yellow-500 flex items-center gap-1">
+                <StarIcon className="w-4 h-4" />
+                {authorScore}
+              </span>
+            </div>
 
             <span className={`text-xs px-2 py-1 rounded-full ${statusColor[post.status]}`}>
               {statusLabel[post.status]}
             </span>
+
           </div>
 
           <span className="text-xs text-gray-400">
             {new Date(post.createdAt).toLocaleString()}
           </span>
+
         </div>
 
         {/* ACTIONS */}
@@ -141,7 +160,6 @@ export default function PostCard({
                 onCloseComments(post.id);
               }}
               className="p-2 rounded-xl text-red-500 hover:bg-red-50"
-              title="Block comments"
             >
               <LockClosedIcon className="w-5 h-5" />
             </button>
@@ -180,35 +198,29 @@ export default function PostCard({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full p-3 rounded-xl bg-white border border-black/10"
-              placeholder="Title"
             />
 
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               className="w-full p-3 rounded-xl bg-white border border-black/10"
-              placeholder="Text"
             />
 
             <input
               value={image}
               onChange={(e) => setImage(e.target.value)}
-              placeholder="Image URL"
               className="w-full p-3 rounded-xl bg-white border border-black/10"
             />
 
             <PostTagSelect
               options={tagOptions}
               value={tagOptions}
-              onChange={(vals) => setTags(vals.map((v) => v.value))}
+              onChange={(vals) => setTags(vals.map(v => v.value))}
             />
 
             <div className="flex justify-end gap-2">
 
-              <button
-                onClick={cancel}
-                className="px-4 py-2 rounded-xl bg-gray-200"
-              >
+              <button onClick={cancel} className="px-4 py-2 bg-gray-200 rounded-xl">
                 Cancel
               </button>
 
@@ -220,78 +232,37 @@ export default function PostCard({
               </button>
 
             </div>
+
           </div>
         ) : (
           <>
             <h2 className="text-lg font-bold">{post.title}</h2>
-
             <p className="text-sm text-gray-600 mt-1">{post.text}</p>
 
-            <div className="flex flex-wrap gap-2 mt-3">
-              {post.tags?.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2 py-1 text-xs rounded-full bg-pink-100 text-pink-600"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-
             {post.image && (
-              <img
-                src={post.image}
-                className="mt-3 rounded-xl w-full object-cover"
-              />
+              <img src={post.image} className="mt-3 rounded-xl w-full" />
             )}
           </>
         )}
       </div>
 
-      {/* ACTIONS */}
+      {/* ACTION BAR */}
       {!editing && (
-        <div className="flex items-center justify-between px-4 py-4 border-t">
+        <div className="flex justify-between px-4 py-4 border-t">
 
-          <div className="flex items-center gap-5">
+          <div className="flex gap-5">
 
-            <button
-              onClick={() => {
-                if (isOwner) {
-                  showWarning("Cannot vote on your own post!");
-                  return;
-                }
-                onLike(post.id);
-              }}
-              className="flex items-center gap-1"
-            >
-              <HeartIcon className="h-5 w-5 text-pink-500" />
+            <button onClick={() => onLike(post.id)} className="flex gap-1">
+              <HeartIcon className="w-5 h-5 text-pink-500" />
               {post.likes}
             </button>
 
-            <button
-              onClick={() => {
-                if (isOwner) {
-                  showWarning("Cannot vote on your own post!");
-                  return;
-                }
-                onDislike(post.id);
-              }}
-              className="flex items-center gap-1"
-            >
+            <button onClick={() => onDislike(post.id)} className="flex gap-1">
               <HandThumbDownIcon className="w-5 h-5 text-gray-500" />
               {post.dislikes}
             </button>
 
-            <button
-              onClick={() => {
-                if (isExpired) {
-                  showWarning("Comments are closed for expired posts!");
-                  return;
-                }
-                setShowComments((s) => !s);
-              }}
-              className="flex items-center gap-1"
-            >
+            <button onClick={() => setShowComments(s => !s)}>
               <ChatBubbleLeftIcon className="w-5 h-5 text-pink-500" />
             </button>
 
@@ -304,12 +275,10 @@ export default function PostCard({
         </div>
       )}
 
-      {!isExpired && showComments && (
-          <CommentSection
-  postId={post.id}
-  onPostUpdate={onPostUpdate}
-/>
-)}
+      {showComments && !isExpired && (
+        <CommentSection postId={post.id} onPostUpdate={onPostUpdate} />
+      )}
+
     </div>
   );
 }

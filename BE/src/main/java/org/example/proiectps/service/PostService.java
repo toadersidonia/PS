@@ -146,10 +146,14 @@ public class PostService {
         PostResponseDTO dto = new PostResponseDTO();
 
         dto.setId(post.getPostId().toString());
+
         dto.setAuthor(post.getAuthor().getUsername());
+        dto.setAuthorId(post.getAuthor().getUserId());
+
         dto.setTitle(post.getTitle());
         dto.setText(post.getText());
         dto.setImage(post.getImage());
+
         dto.setTags(
                 post.getTags() == null
                         ? List.of()
@@ -158,6 +162,7 @@ public class PostService {
                         .map(Tag::getName)
                         .toList()
         );
+
         dto.setCreatedAt(post.getDate().toString());
         dto.setStatus(post.getStatus().name());
 

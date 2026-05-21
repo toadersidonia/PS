@@ -13,6 +13,7 @@ import java.util.List;
 public class PostResponseDTO {
     private String id;
     private String author;
+    private Long authorId;
     private String title;
     private String text;
     private String image;
