@@ -98,7 +98,13 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        if (!post.getAuthor().getUserId().equals(userId)) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isAuthor = post.getAuthor().getUserId().equals(userId);
+        boolean isModerator = "MODERATOR".equals(user.getRole()) || "ADMIN".equals(user.getRole());
+
+        if (!isAuthor && !isModerator) {
             throw new RuntimeException("Not allowed");
         }
 
@@ -133,7 +139,13 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        if (!post.getAuthor().getUserId().equals(userId)) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isAuthor = post.getAuthor().getUserId().equals(userId);
+        boolean isModerator = "MODERATOR".equals(user.getRole()) || "ADMIN".equals(user.getRole());
+
+        if (!isAuthor && !isModerator) {
             throw new RuntimeException("Not allowed");
         }
 
@@ -192,22 +204,18 @@ public class PostService {
         if (existing.isPresent()) {
             PostLike vote = existing.get();
 
-            // toggle off (dacă apeși același buton)
             if (vote.getLiked() == liked) {
                 postLikeRepository.delete(vote);
 
-                // refresh post state
                 return mapToDTO(post);
             }
 
-            // switch like <-> dislike
             vote.setLiked(liked);
             postLikeRepository.save(vote);
 
             return mapToDTO(post);
         }
 
-        // nou vot
         PostLike newVote = new PostLike();
         newVote.setLiked(liked);
         newVote.setUser(user);

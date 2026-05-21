@@ -53,6 +53,27 @@ public class UserService {
         return userRepository.save(existing);
     }
 
+    public User banUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setBanned(true);
+        return userRepository.save(user);
+    }
+
+    public User unbanUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setBanned(false);
+        return userRepository.save(user);
+    }
+
+    public User changeRole(Long id, String newRole) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setRole(newRole);
+        return userRepository.save(user);
+    }
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
