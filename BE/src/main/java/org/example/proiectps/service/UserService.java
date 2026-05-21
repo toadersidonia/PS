@@ -18,6 +18,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private NotificationService notificationService;
+
     public User createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -57,14 +60,18 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setBanned(true);
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        notificationService.sendBanNotification(saved);
+        return saved;
     }
 
     public User unbanUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setBanned(false);
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        notificationService.sendUnbanNotification(saved);
+        return saved;
     }
 
     public User changeRole(Long id, String newRole) {
