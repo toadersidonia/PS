@@ -36,40 +36,6 @@ public class CommentService {
     private CommentLikeRepository commentLikeRepository;
 
 
-//    public CommentResponseDTO createComment(CommentRequestDTO dto, Long postId, Long userId) {
-//
-//        User author = userRepository.findById(userId)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        Post post = postRepository.findById(postId)
-//                .orElseThrow(() -> new RuntimeException("Post not found"));
-//
-//        if (post.getStatus() == PostStatus.EXPIRED) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comments are closed");
-//        }
-//
-//        if ((dto.getText() == null || dto.getText().trim().isEmpty())
-//                && (dto.getImage() == null || dto.getImage().isEmpty())) {
-//            throw new RuntimeException("Comment must have text or image");
-//        }
-//
-//        Comment comment = new Comment();
-//        comment.setAuthor(author);
-//        comment.setPost(post);
-//        comment.setText(dto.getText());
-//        comment.setImage(dto.getImage());
-//        comment.setDate(LocalDateTime.now());
-//
-//        Comment saved = commentRepository.save(comment);
-//
-//        if (post.getStatus() == PostStatus.JUST_POSTED) {
-//            post.setStatus(PostStatus.FIRST_REACTION);
-//            postRepository.save(post);
-//        }
-//
-//        return mapToDTO(saved);
-//    }
-
     public CommentCreateResponseDTO createComment(CommentRequestDTO dto, Long postId, Long userId) {
 
         User author = userRepository.findById(userId)
@@ -119,7 +85,13 @@ public class CommentService {
         Comment existing = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
-        if (!existing.getAuthor().getUserId().equals(userId)) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isAuthor = existing.getAuthor().getUserId().equals(userId);
+        boolean isModerator = "MODERATOR".equals(user.getRole()) || "ADMIN".equals(user.getRole());
+
+        if (!isAuthor && !isModerator) {
             throw new RuntimeException("You are not allowed to edit this comment");
         }
 
@@ -135,8 +107,14 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
-        if (!comment.getAuthor().getUserId().equals(userId)
-                && !comment.getPost().getAuthor().getUserId().equals(userId)) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean isCommentAuthor = comment.getAuthor().getUserId().equals(userId);
+        boolean isPostAuthor = comment.getPost().getAuthor().getUserId().equals(userId);
+        boolean isModerator = "MODERATOR".equals(user.getRole()) || "ADMIN".equals(user.getRole());
+
+        if (!isCommentAuthor && !isPostAuthor && !isModerator) {
             throw new RuntimeException("You are not allowed to delete this comment");
         }
 

@@ -29,7 +29,9 @@ export function usePosts() {
 
   //functie care verifica daca utilizatorul curent poate edita postarea, adica daca e autorul postarii
   const canEdit = (post: Post) => {
-    return user?.username === post.author;
+    return user?.username === post.author
+        || user?.role === "MODERATOR" 
+        || user?.role === "ADMIN";
   };
 
   //functie care adauga o postare noua, primind ca parametru un obiect cu campurile postarii 

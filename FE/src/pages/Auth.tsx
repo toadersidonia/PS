@@ -65,8 +65,13 @@ export default function Auth() {
       }
       navigate("/");
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
-      setError(message);
+        let message = err instanceof Error ? err.message : "Something went wrong";
+        if (message.toLowerCase().includes("banned")) {
+          message = "Your account has been banned. Please contact a moderator.";
+        } else if (message.includes("Failed to fetch") || message.includes("500")) {
+          message = "Invalid username or password";
+        }
+        setError(message);
     } finally {
       setIsSubmitting(false);
     }

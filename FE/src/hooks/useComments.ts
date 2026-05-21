@@ -18,8 +18,11 @@ export function useComments(
       commentService.getByPost(postId).then(setComments);
     }, [postId]);
 
-    const isOwner = (comment: Comment) =>
-    Number(comment.authorId) === Number(currentUser?.id);
+    const isOwner = (comment: Comment) => {
+    if (Number(comment.authorId) === Number(currentUser?.id)) return true;
+    if (user?.role === "MODERATOR" || user?.role === "ADMIN") return true;
+    return false;
+    };
 
     const addComment = async (text: string, image?: string) => {
       if (!currentUser) return;

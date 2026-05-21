@@ -43,6 +43,21 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+    @PutMapping("/{id}/ban")
+    public User banUser(@PathVariable Long id) {
+        return userService.banUser(id);
+    }
+
+    @PutMapping("/{id}/unban")
+    public User unbanUser(@PathVariable Long id) {
+        return userService.unbanUser(id);
+    }
+
+    @PutMapping("/{id}/role")
+    public User changeRole(@PathVariable Long id, @RequestBody String newRole) {
+        return userService.changeRole(id, newRole);
+    }
+
     private final UserScoreService userScoreService;
 
     @GetMapping("/{id}/score")
