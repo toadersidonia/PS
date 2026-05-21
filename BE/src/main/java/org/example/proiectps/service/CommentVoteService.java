@@ -38,10 +38,16 @@ public class CommentVoteService {
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
         if (comment.getAuthor().getUserId().equals(userId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Cannot vote own comment"
-            );
+            VoteResponseDTO res = new VoteResponseDTO();
+
+            CommentResponseDTO commentDTO =
+                    commentService.getCommentById(commentId);
+
+            res.setComment(commentDTO);
+            res.setVoterScore(voter.getScore());
+            res.setStatus("OWN_COMMENT");
+
+            return res;
         }
 
         User author = comment.getAuthor();
@@ -54,18 +60,20 @@ public class CommentVoteService {
         VoteType oldType = (vote == null ? null : vote.getType());
 
         if (oldType == newType) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Already voted"
-            );
+            VoteResponseDTO res = new VoteResponseDTO();
+
+            CommentResponseDTO commentDTO =
+                    commentService.getCommentById(commentId);
+
+            res.setComment(commentDTO);
+            res.setVoterScore(voter.getScore());
+            res.setStatus("ALREADY_VOTED");
+
+            return res;
         }
 
-        // =========================
-        // AUTHOR SCORE LOGIC
-        // =========================
         double authorDelta = 0.0;
 
-        // undo old vote effect
         if (oldType == VoteType.LIKE) {
             authorDelta -= 5.0;
         }
@@ -83,26 +91,18 @@ public class CommentVoteService {
 
         author.setScore(author.getScore() + authorDelta);
 
-        // =========================
-        // VOTER SCORE LOGIC
-        // =========================
         double voterDelta = 0.0;
 
-        // undo old DISLIKE penalty
         if (oldType == VoteType.DISLIKE) {
             voterDelta += 1.5;
         }
 
-        // apply new DISLIKE penalty
         if (newType == VoteType.DISLIKE) {
             voterDelta -= 1.5;
         }
 
         voter.setScore(voter.getScore() + voterDelta);
 
-        // =========================
-        // SAVE VOTE
-        // =========================
         if (vote == null) {
             vote = new CommentLike();
             vote.setUser(voter);
@@ -115,9 +115,6 @@ public class CommentVoteService {
         userRepository.save(author);
         userRepository.save(voter);
 
-        // =========================
-        // RESPONSE
-        // =========================
         VoteResponseDTO res = new VoteResponseDTO();
 
         CommentResponseDTO commentDTO =
@@ -125,6 +122,7 @@ public class CommentVoteService {
 
         res.setComment(commentDTO);
         res.setVoterScore(voter.getScore());
+        res.setStatus("OK");
 
         return res;
     }

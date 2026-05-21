@@ -97,19 +97,44 @@ export function usePosts() {
     );
   };
 
+//   const closeComments = async (id: string) => {
+//   if (!user) return;
+
+//   const updated = await postService.closeComments(id, Number(user.id));
+
+//   setPosts((prev) =>
+//     prev.map((p) => (p.id === id ? updated : p))
+//   );
+// };
+
   const closeComments = async (id: string) => {
-  if (!user) return;
+    if (!user) return;
 
-  const updated = await postService.closeComments(id, Number(user.id));
+    try {
+      await postService.closeComments(id, Number(user.id));
 
-  setPosts((prev) =>
-    prev.map((p) => (p.id === id ? updated : p))
-  );
-};
+      setPosts((prev) =>
+        prev.map((p) =>
+          p.id === id ? { ...p, status: "EXPIRED" } : p
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // const updatePostStatus = (id: string, status: Post["status"]) => {
+  //   setPosts((prev) =>
+  //     prev.map((p) =>
+  //       p.id === id ? { ...p, status } : p
+  //     )
+  //   );
+  // };
 
   //returnam lista de postari si functiile pentru a adauga, edita, sterge si verifica daca se poate edita o postare
   return {
     posts,
+    setPosts,
     addPost,
     updatePost,
     deletePost,
@@ -117,5 +142,6 @@ export function usePosts() {
     dislikePost,
     canEdit, 
     closeComments,
+    //updatePostStatus,
   };
 }

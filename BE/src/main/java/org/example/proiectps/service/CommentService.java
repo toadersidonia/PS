@@ -1,5 +1,6 @@
 package org.example.proiectps.service;
 
+import org.example.proiectps.dto.CommentCreateResponseDTO;
 import org.example.proiectps.dto.CommentRequestDTO;
 import org.example.proiectps.dto.CommentResponseDTO;
 import org.example.proiectps.entity.Comment;
@@ -35,7 +36,41 @@ public class CommentService {
     private CommentLikeRepository commentLikeRepository;
 
 
-    public CommentResponseDTO createComment(CommentRequestDTO dto, Long postId, Long userId) {
+//    public CommentResponseDTO createComment(CommentRequestDTO dto, Long postId, Long userId) {
+//
+//        User author = userRepository.findById(userId)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//
+//        Post post = postRepository.findById(postId)
+//                .orElseThrow(() -> new RuntimeException("Post not found"));
+//
+//        if (post.getStatus() == PostStatus.EXPIRED) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comments are closed");
+//        }
+//
+//        if ((dto.getText() == null || dto.getText().trim().isEmpty())
+//                && (dto.getImage() == null || dto.getImage().isEmpty())) {
+//            throw new RuntimeException("Comment must have text or image");
+//        }
+//
+//        Comment comment = new Comment();
+//        comment.setAuthor(author);
+//        comment.setPost(post);
+//        comment.setText(dto.getText());
+//        comment.setImage(dto.getImage());
+//        comment.setDate(LocalDateTime.now());
+//
+//        Comment saved = commentRepository.save(comment);
+//
+//        if (post.getStatus() == PostStatus.JUST_POSTED) {
+//            post.setStatus(PostStatus.FIRST_REACTION);
+//            postRepository.save(post);
+//        }
+//
+//        return mapToDTO(saved);
+//    }
+
+    public CommentCreateResponseDTO createComment(CommentRequestDTO dto, Long postId, Long userId) {
 
         User author = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -45,11 +80,6 @@ public class CommentService {
 
         if (post.getStatus() == PostStatus.EXPIRED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Comments are closed");
-        }
-
-        if ((dto.getText() == null || dto.getText().trim().isEmpty())
-                && (dto.getImage() == null || dto.getImage().isEmpty())) {
-            throw new RuntimeException("Comment must have text or image");
         }
 
         Comment comment = new Comment();
@@ -66,7 +96,12 @@ public class CommentService {
             postRepository.save(post);
         }
 
-        return mapToDTO(saved);
+        CommentCreateResponseDTO res = new CommentCreateResponseDTO();
+        res.setComment(mapToDTO(saved));
+        res.setPostId(post.getPostId());
+        res.setPostStatus(post.getStatus());
+
+        return res;
     }
 
     public List<CommentResponseDTO> retrieveComments(Long postId) {

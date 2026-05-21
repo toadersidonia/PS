@@ -1,17 +1,49 @@
 import { api } from "../lib/api";
 import type { Comment } from "../types/Comment";
 
+type CommentCreateResponse = {
+  comment: Comment;
+  postId: string;
+  postStatus: "JUST_POSTED" | "FIRST_REACTION" | "EXPIRED";
+};
+
 export const commentService = {
   getByPost: async (postId: string): Promise<Comment[]> => {
     return api.get<Comment[]>(`/comments/post/${postId}`);
   },
 
+  // create: async (
+  //   postId: string,
+  //   comment: Partial<Comment>,
+  //   userId: string
+  // ): Promise<Comment> => {
+  //   return api.post<Comment>(
+  //     `/comments?postId=${postId}&userId=${userId}`,
+  //     comment
+  //   );
+  // },
+//   create: async (
+//   postId: string,
+//   comment: Partial<Comment>,
+//   userId: string
+// ): Promise<{
+//   comment: Comment;
+//   updatedPost: {
+//     id: string;
+//     status: string;
+//   };
+// }> => {
+//   return api.post(
+//     `/comments?postId=${postId}&userId=${userId}`,
+//     comment
+//   );
+// },
   create: async (
     postId: string,
     comment: Partial<Comment>,
     userId: string
-  ): Promise<Comment> => {
-    return api.post<Comment>(
+  ): Promise<CommentCreateResponse> => {
+    return api.post<CommentCreateResponse>(
       `/comments?postId=${postId}&userId=${userId}`,
       comment
     );
@@ -51,6 +83,7 @@ vote: async (
 ): Promise<{
   comment: Comment;
   voterScore: number;
+  status: string;
 }> => {
   return api.put(
     `/comments/${commentId}/vote?userId=${userId}&type=${type}`,

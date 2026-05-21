@@ -24,4 +24,9 @@ export const userService = {
   deleteUser: async (id: string): Promise<void> => {
     await api.delete<void>(`/users/${id}`);
   },
+
+  getUserScore: async (id: string): Promise<number> => {
+    return await api.get<number>(`/users/${id}/score`);
+  },
+
 };

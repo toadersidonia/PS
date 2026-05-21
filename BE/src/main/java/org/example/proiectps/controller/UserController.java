@@ -1,6 +1,8 @@
 package org.example.proiectps.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.proiectps.entity.User;
+import org.example.proiectps.service.UserScoreService;
 import org.example.proiectps.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
     @Autowired
@@ -38,5 +41,12 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+    }
+
+    private final UserScoreService userScoreService;
+
+    @GetMapping("/{id}/score")
+    public double getUserScore(@PathVariable Long id) {
+        return userScoreService.getUserScore(id);
     }
 }

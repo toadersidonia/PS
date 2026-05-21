@@ -34,15 +34,16 @@ export const postService = {
     return api.post<Post>(`/posts/${id}/dislike?userId=${userId}`, {});
   },
 
-  closeComments: async (id: string, userId: number) => {
-  const res = await fetch(
-    `/posts/${id}/close-comments?userId=${userId}`,
-    {
-      method: "POST",
-    }
+closeComments: async (postId: string, userId: number): Promise<Post> => {
+  return api.post<Post>(
+    `/posts/${postId}/close-comments?userId=${userId}`,
+    {}
   );
-
-  return await res.json();
 },
+
+// getById: async (id: string) => {
+//   const res = await fetch(`/api/posts/${id}`);
+//   return res.json();
+// }
 
 };

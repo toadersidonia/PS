@@ -8,6 +8,7 @@ import PostTagSelect from "../components/PostTagSelect";
 export default function PostSection({ onlyMine = false }) {
   const {
     posts,
+    setPosts,
     addPost,
     updatePost,
     deletePost,
@@ -24,6 +25,7 @@ export default function PostSection({ onlyMine = false }) {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
+  
   const allTags = useMemo(
     () => Array.from(new Set(posts.flatMap((p) => p.tags || []))),
     [posts]
@@ -109,6 +111,15 @@ export default function PostSection({ onlyMine = false }) {
           onDislike={dislikePost}
           canEdit={canEdit}
           onCloseComments={closeComments}
+          onPostUpdate={(updatedPost) => {
+            setPosts((prev) =>
+              prev.map((p) =>
+                Number(p.id) === Number(updatedPost.id)
+                  ? { ...p, status: updatedPost.status }
+                  : p
+              )
+            );
+          }}
         />
       ))}
     </div>

@@ -1,24 +1,43 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";  //pentru schimbarea paginilor
-import { useAuth } from "../hooks/useAuth"; //ia dateledespre user, adica cine e logat
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { userService } from "../services/userService";
+import { useScore } from "../contexts/ScoreContext";
 
 export const AppShell = ({ children }: { children: ReactNode }) => {
-  const location = useLocation(); //tine minte pagina curenta
-  const navigate = useNavigate(); //functie care muta utilizatorul pe alta pagina
+  const location = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  const [menuOpen, setMenuOpen] = useState(false); //tinemm minte daca meniul e deschis
-  const menuRef = useRef<HTMLDivElement>(null); //tine minte meniul real de pe pagina
+  const { refreshKey } = useScore();
+
+  const [score, setScore] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => { //daca clicku e in afara meniului, inchidem meniul
+    const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside); //ascultam clickurile pe pagina
-    return () => document.removeEventListener("mousedown", handleClickOutside); //sterge listener-ul cand componenta dispare
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  //  SCORE LOAD + REFRESH
+  useEffect(() => {
+    const load = async () => {
+      if (!user?.id) return;
+
+      const s = await userService.getUserScore(user.id);
+      setScore(s);
+    };
+
+    load();
+  }, [user, refreshKey]);
 
   const handleLogout = () => {
     logout();
@@ -26,9 +45,8 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
     navigate("/auth");
   };
 
-  const getInitial = (username?: string): string => {
-    return username ? username.charAt(0).toUpperCase() : "?";
-  };
+  const getInitial = (username?: string) =>
+    username ? username.charAt(0).toUpperCase() : "?";
 
   return (
     <div className="min-h-screen text-gray-800 bg-gradient-to-br from-[#f5e9ff] via-[#fbe4ff] via-[#ffe9e9] to-[#fff3e6] flex flex-col">
@@ -36,19 +54,18 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       {/* NAVBAR */}
       <header className="h-[70px] sticky top-0 z-50 grid grid-cols-3 items-center px-6 bg-white/60 backdrop-blur-xl border-b border-black/5">
 
-        {/* LEFT */} 
         <div className="font-bold text-xl bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
           InstaLite
         </div>
 
-        {/* CENTER */} 
         <nav className="flex justify-center gap-3">
-          <Link   //butonul catre feed
+
+          <Link
             to="/"
             className={`px-3 py-2 rounded-full transition ${
-              location.pathname === "/" //verifica daca suntem pe pagina de feed
-                ? "bg-gradient-to-br from-pink-500 to-purple-500 text-white" //daca da, pune butonul colorat
-                : "text-gray-500 hover:bg-pink-100 hover:text-pink-600" //daca nu, pune butonul gri care se coloreaza la hover
+              location.pathname === "/"
+                ? "bg-gradient-to-br from-pink-500 to-purple-500 text-white"
+                : "text-gray-500 hover:bg-pink-100 hover:text-pink-600"
             }`}
           >
             Feed
@@ -64,7 +81,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
           >
             My Posts
           </Link>
-          
 
           <Link
             to="/moderator"
@@ -76,43 +92,40 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
           >
             Moderator
           </Link>
+
         </nav>
 
-        {/* RIGHT - User Menu */}
+        {/* USER */}
         <div className="flex justify-end relative" ref={menuRef}>
+
           <button
-            type="button"
-            onClick={() => setMenuOpen((prev) => !prev)} //deschide sau inchide meniul la click
-            className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 text-white font-semibold flex items-center justify-center shadow-md hover:shadow-lg transition-shadow" //butonul care arata initiala userului
-            aria-label="User menu" 
+            onClick={() => setMenuOpen((p) => !p)}
+            className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 text-white font-semibold flex items-center justify-center"
           >
-            {getInitial(user?.username)} 
+            {getInitial(user?.username)}
           </button>
 
-          {menuOpen && ( //daca meniul e deschis, arata meniul
+          {menuOpen && (
             <div className="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-xl border border-pink-100 overflow-hidden">
-              <div className="px-4 py-3 bg-gradient-to-r from-pink-50 to-purple-50 border-b border-pink-100">
-                <p className="text-sm font-semibold text-gray-800 truncate">
-                  {user?.username}
-                </p>
-                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-pink-100 text-pink-700">
-                    {user?.role}
-                  </span>
-                  <span className="text-xs text-gray-500">
-                    Score: {user?.score ?? 0}
-                  </span>
+
+              <div className="px-4 py-3 bg-gradient-to-r from-pink-50 to-purple-50">
+
+                <p className="text-sm font-semibold">{user?.username}</p>
+                <p className="text-xs text-gray-500">{user?.email}</p>
+
+                <div className="mt-1 text-xs text-gray-500">
+                  Score: {score}
                 </div>
+
               </div>
 
               <button
-                type="button"
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 transition-colors"
+                className="w-full px-4 py-3 text-left hover:bg-pink-50"
               >
                 Sign Out
               </button>
+
             </div>
           )}
         </div>

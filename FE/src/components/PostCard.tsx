@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import CommentSection from "./CommentSection";
 import PostTagSelect, { TagOption } from "./PostTagSelect";
 import type { Post } from "../types/Post";
@@ -26,6 +27,8 @@ type Props = {
   canEdit: (post: Post) => boolean;
 
   onCloseComments: (id: string) => void;
+
+  onPostUpdate: (updatedPost: any) => void;
 };
 
 export default function PostCard({
@@ -35,7 +38,8 @@ export default function PostCard({
   onLike,
   onDislike,
   canEdit,
-  onCloseComments
+  onCloseComments,  
+  onPostUpdate
 }: Props) {
   const { user } = useAuth();
 
@@ -52,6 +56,12 @@ export default function PostCard({
   };
 
   const isExpired = post.status === "EXPIRED";
+
+  useEffect(() => {
+  if (isExpired) {
+    setShowComments(false);
+  }
+}, [isExpired]);
 
   const [showComments, setShowComments] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -247,7 +257,7 @@ export default function PostCard({
             <button
               onClick={() => {
                 if (isOwner) {
-                  showWarning("Nu poți da like la propria postare");
+                  showWarning("Cannot vote on your own post!");
                   return;
                 }
                 onLike(post.id);
@@ -261,7 +271,7 @@ export default function PostCard({
             <button
               onClick={() => {
                 if (isOwner) {
-                  showWarning("Nu poți da dislike la propria postare");
+                  showWarning("Cannot vote on your own post!");
                   return;
                 }
                 onDislike(post.id);
@@ -275,7 +285,7 @@ export default function PostCard({
             <button
               onClick={() => {
                 if (isExpired) {
-                  showWarning("Comentariile sunt blocate pentru această postare");
+                  showWarning("Comments are closed for expired posts!");
                   return;
                 }
                 setShowComments((s) => !s);
@@ -294,7 +304,12 @@ export default function PostCard({
         </div>
       )}
 
-      {showComments && <CommentSection postId={post.id} />}
+      {!isExpired && showComments && (
+          <CommentSection
+  postId={post.id}
+  onPostUpdate={onPostUpdate}
+/>
+)}
     </div>
   );
 }

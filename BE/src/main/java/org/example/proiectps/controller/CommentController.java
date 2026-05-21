@@ -1,5 +1,6 @@
 package org.example.proiectps.controller;
 
+import org.example.proiectps.dto.CommentCreateResponseDTO;
 import org.example.proiectps.dto.CommentRequestDTO;
 import org.example.proiectps.dto.CommentResponseDTO;
 import org.example.proiectps.dto.VoteResponseDTO;
@@ -22,8 +23,16 @@ public class CommentController {
     private CommentVoteService commentVoteService;
 
     // CREATE
+//    @PostMapping
+//    public CommentResponseDTO createComment(
+//            @RequestParam Long postId,
+//            @RequestParam Long userId,
+//            @RequestBody CommentRequestDTO dto
+//    ) {
+//        return commentService.createComment(dto, postId, userId);
+//    }
     @PostMapping
-    public CommentResponseDTO createComment(
+    public CommentCreateResponseDTO createComment(
             @RequestParam Long postId,
             @RequestParam Long userId,
             @RequestBody CommentRequestDTO dto

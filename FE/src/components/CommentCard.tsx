@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Comment } from "../types/Comment";
-import { useAuth } from "../hooks/useAuth";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import { HandThumbDownIcon } from "@heroicons/react/24/solid";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 import { StarIcon } from "@heroicons/react/24/solid";
+import { userService } from "../services/userService";
+import { useScore } from "../contexts/ScoreContext";
 
 type Props = {
   comment: Comment;
@@ -24,11 +25,14 @@ export default function CommentCard({
   onEdit,
   canEdit,
 }: Props) {
-  //const { user } = useAuth();
 
   const [editing, setEditing] = useState(false);
   const [text, setText] = useState(comment.text);
   const [image, setImage] = useState(comment.image || "");
+
+  const [authorScore, setAuthorScore] = useState(0);
+
+  const { refreshKey, refreshScore } = useScore();
 
   const isOwner = canEdit(comment);
 
@@ -37,6 +41,22 @@ export default function CommentCard({
 
     onEdit(comment.id, text, image.trim() ? image : undefined);
     setEditing(false);
+  };
+
+  useEffect(() => {
+    const loadScore = async () => {
+      if (!comment.authorId) return;
+
+      const s = await userService.getUserScore(comment.authorId);
+      setAuthorScore(s);
+    };
+
+    loadScore();
+  }, [comment.authorId, refreshKey]);
+
+  const handleVote = async (type: "LIKE" | "DISLIKE") => {
+    await onVote(comment.id, type);
+    refreshScore(); 
   };
 
   return (
@@ -50,7 +70,7 @@ export default function CommentCard({
 
             <span className="text-xs text-yellow-500 flex items-center gap-1">
               <StarIcon className="w-4 h-4 text-yellow-500" />
-              {comment.authorScore}
+              {authorScore}
             </span>
           </p>
 
@@ -128,7 +148,7 @@ export default function CommentCard({
 
             {/* LIKE */}
             <button
-              onClick={() => onVote(comment.id, "LIKE")}
+              onClick={() => handleVote("LIKE")}
               className="flex items-center gap-1 text-pink-500 hover:text-pink-600 transition"
             >
               <HeartIcon className="w-5 h-5 text-pink-500" />
@@ -137,7 +157,7 @@ export default function CommentCard({
 
             {/* DISLIKE */}
             <button
-              onClick={() => onVote(comment.id, "DISLIKE")}
+              onClick={() => handleVote("DISLIKE")}
               className="flex items-center gap-1 text-gray-500 hover:text-gray-700 transition"
             >
               <HandThumbDownIcon className="w-5 h-5 text-gray-500" />

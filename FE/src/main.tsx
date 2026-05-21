@@ -3,8 +3,12 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 
+import { ScoreProvider } from "./contexts/ScoreContext";
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <ScoreProvider>
+      <App />
+    </ScoreProvider>
   </StrictMode>
 );

@@ -8,10 +8,11 @@ import { useAuth } from "../hooks/useAuth";
 //parametrii PRIMITI DIN EXTERIOR - componenta primeste informatii de la componenta parinte 
 type Props = {
   postId: string; //are nevoie sa stie pt ce post ia comentariile
+  onPostUpdate?: (updatedPost: any) => void;
 };
 
 //export = permite altor fisiere sa foloseasca functia asta
-export default function CommentSection({ postId }: Props) { //face deconstructing
+export default function CommentSection({ postId, onPostUpdate }: Props) { //face deconstructing
   const { user } = useAuth(); //ia user ul logat
 
   //IN REACT FUNCTIILE SUNT first class citizens, adica usnt tratate ca orice alta valoare, se pot salva in varabile
@@ -23,7 +24,7 @@ export default function CommentSection({ postId }: Props) { //face deconstructin
     editComment,
     isOwner,
     voteComment
-  } = useComments(postId, user ?? null);
+  } = useComments(postId, user ?? null, onPostUpdate);
 
   //ce vedem noi pe ecran
   return (

@@ -3,12 +3,13 @@ package org.example.proiectps.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.proiectps.enums.PostStatus;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VoteResponseDTO {
+@Data
+public class CommentCreateResponseDTO {
     private CommentResponseDTO comment;
-    private Double voterScore;
-    private String status;
+    private Long postId;
+    private PostStatus postStatus;
 }
