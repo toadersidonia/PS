@@ -77,7 +77,7 @@ export default function PostCard({
     const loadScore = async () => {
       if (!post?.authorId) return;
 
-      const s = await userService.getUserScore(post.authorId);
+      const s = await userService.getUserScore(String(post.authorId));
       setAuthorScore(s);
     };
 
