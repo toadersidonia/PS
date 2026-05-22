@@ -72,7 +72,6 @@ export default function PostCard({
     setTimeout(() => setWarning(null), 2500);
   };
 
-  // SCORE LOAD (CORECT)
   useEffect(() => {
     const loadScore = async () => {
       if (!post?.authorId) return;
@@ -84,7 +83,6 @@ export default function PostCard({
     loadScore();
   }, [post?.authorId, refreshKey]);
 
-  // CLOSE COMMENTS ON EXPIRE
   useEffect(() => {
     if (isExpired) setShowComments(false);
   }, [isExpired]);

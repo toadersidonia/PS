@@ -27,7 +27,6 @@ export const AppShell = ({ children }: { children: ReactNode }) => {
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  //  SCORE LOAD + REFRESH
   useEffect(() => {
     const load = async () => {
       if (!user?.id) return;

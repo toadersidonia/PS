@@ -65,7 +65,6 @@ export default function PostComposer({ onAddPost }: Props) {
       dislikes: 0,
     });
 
-    // refresh tags (dacă backend adaugă automat noi tags)
     await loadTags();
 
     setTitle("");
@@ -96,7 +95,6 @@ export default function PostComposer({ onAddPost }: Props) {
             className="w-full rounded-2xl bg-white/80 px-4 py-3 outline-none focus:ring-2 focus:ring-pink-300 transition shadow-sm"
           />
 
-          {/* TAG SELECT (IMPORTANT FIX) */}
           <PostTagSelect
             options={options}
             value={selectedTags}

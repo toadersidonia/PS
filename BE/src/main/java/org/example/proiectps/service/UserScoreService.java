@@ -23,7 +23,6 @@ public class UserScoreService {
         long commentLikesReceived = commentLikeRepository.countByCommentAuthorUserIdAndType(userId, VoteType.LIKE);
         long commentDislikesReceived = commentLikeRepository.countByCommentAuthorUserIdAndType(userId, VoteType.DISLIKE);
 
-        //  NOU: ce a dat user-ul (IMPORTANT)
         long commentDislikesGiven =
                 commentLikeRepository.countByUser_UserIdAndType(userId, VoteType.DISLIKE);
 

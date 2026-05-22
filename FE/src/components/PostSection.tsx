@@ -20,7 +20,6 @@ export default function PostSection({ onlyMine = false }) {
 
   const { user } = useAuth();
 
-  // ===== FILTER STATE (DOAR PE FEED) =====
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -64,7 +63,6 @@ export default function PostSection({ onlyMine = false }) {
       {/* CREATE POST */}
       {!onlyMine && <PostComposer onAddPost={addPost} />}
 
-      {/* ===== FILTER PANEL (DOAR FEED) ===== */}
       {!onlyMine && (
         <div className="p-4 rounded-2xl bg-white/60 backdrop-blur-xl shadow-md space-y-3">
 
@@ -76,7 +74,6 @@ export default function PostSection({ onlyMine = false }) {
             className="w-full p-2 rounded-xl bg-white/80 border border-pink-100 focus:ring-2 focus:ring-pink-300"
           />
 
-          {/* TAG FILTER (dropdown modern) */}
           <select
             value={selectedTag || ""}
             onChange={(e) => setSelectedTag(e.target.value || null)}

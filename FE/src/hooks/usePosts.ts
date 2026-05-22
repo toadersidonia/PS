@@ -62,22 +62,6 @@ export function usePosts() {
     setPosts((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // const likePost = (id: string) => {
-  //   setPosts((prev) =>
-  //     prev.map((p) =>
-  //       p.id === id ? { ...p, likes: p.likes + 1 } : p
-  //     )
-  //   );
-  // };
-
-  // const dislikePost = (id: string) => {
-  //   setPosts((prev) =>
-  //     prev.map((p) =>
-  //       p.id === id ? { ...p, dislikes: p.dislikes + 1 } : p
-  //     )
-  //   );
-  // };
-
 
   const likePost = async (id: string) => {
     if (!user) return;
@@ -99,15 +83,6 @@ export function usePosts() {
     );
   };
 
-//   const closeComments = async (id: string) => {
-//   if (!user) return;
-
-//   const updated = await postService.closeComments(id, Number(user.id));
-
-//   setPosts((prev) =>
-//     prev.map((p) => (p.id === id ? updated : p))
-//   );
-// };
 
   const closeComments = async (id: string) => {
     if (!user) return;
@@ -125,13 +100,6 @@ export function usePosts() {
     }
   };
 
-  // const updatePostStatus = (id: string, status: Post["status"]) => {
-  //   setPosts((prev) =>
-  //     prev.map((p) =>
-  //       p.id === id ? { ...p, status } : p
-  //     )
-  //   );
-  // };
 
   //returnam lista de postari si functiile pentru a adauga, edita, sterge si verifica daca se poate edita o postare
   return {

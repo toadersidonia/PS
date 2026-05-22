@@ -5,6 +5,8 @@ import org.example.proiectps.entity.User;
 import org.example.proiectps.service.UserScoreService;
 import org.example.proiectps.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,25 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    //TESTARE EMAIL!!!!!!
+    @Autowired
+    private JavaMailSender mailSender;
+    @GetMapping("/test-mail")
+    public String testMail() {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom("myprojectmail@gmail.com");
+        message.setTo("toadersidonia22@gmail.com");
+        message.setSubject("TEST EMAIL");
+        message.setText("merge backend email");
+
+        mailSender.send(message);
+
+        return "sent";
+    }
 
     @PostMapping
     public User createUser(@RequestBody User user) {

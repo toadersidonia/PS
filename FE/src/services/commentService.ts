@@ -12,32 +12,6 @@ export const commentService = {
     return api.get<Comment[]>(`/comments/post/${postId}`);
   },
 
-  // create: async (
-  //   postId: string,
-  //   comment: Partial<Comment>,
-  //   userId: string
-  // ): Promise<Comment> => {
-  //   return api.post<Comment>(
-  //     `/comments?postId=${postId}&userId=${userId}`,
-  //     comment
-  //   );
-  // },
-//   create: async (
-//   postId: string,
-//   comment: Partial<Comment>,
-//   userId: string
-// ): Promise<{
-//   comment: Comment;
-//   updatedPost: {
-//     id: string;
-//     status: string;
-//   };
-// }> => {
-//   return api.post(
-//     `/comments?postId=${postId}&userId=${userId}`,
-//     comment
-//   );
-// },
   create: async (
     postId: string,
     comment: Partial<Comment>,
@@ -66,16 +40,6 @@ export const commentService = {
     );
   },
 
-// vote: async (
-//   commentId: string,
-//   userId: string,
-//   type: "LIKE" | "DISLIKE"
-// ): Promise<Comment> => {
-// return api.put<Comment>(
-//   `/comments/${commentId}/vote?userId=${userId}&type=${type}`,
-//   {}
-// );
-// },
 vote: async (
   commentId: string,
   userId: string,
