@@ -2,12 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]
 
 jobs:
-  frontend-tests:
+  frontend:
+    name: Frontend Tests
     runs-on: ubuntu-latest
 
     defaults:
@@ -15,10 +14,10 @@ jobs:
         working-directory: FE
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -28,10 +27,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
+      - name: Run frontend tests
         run: npm test -- --run
 
-  backend-tests:
+  backend:
+    name: Backend Tests
     runs-on: ubuntu-latest
 
     defaults:
@@ -39,16 +39,14 @@ jobs:
         working-directory: BE
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          node-version: 22
+          distribution: temurin
+          java-version: 21
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
+      - name: Run backend tests
+        run: mvn test
