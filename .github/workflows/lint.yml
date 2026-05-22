@@ -2,26 +2,54 @@ name: Lint & Code Quality
 
 on:
   push:
-    branches: [ "main", "dev" ]
   pull_request:
-    branches: [ "main", "dev" ]
 
 jobs:
-  lint:
+  frontend-lint:
+    name: Frontend Lint
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: FE
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: FE/package-lock.json
 
       - name: Install dependencies
         run: npm install
 
       - name: Run ESLint
         run: npm run lint
+
+  backend-code-quality:
+    name: Backend Code Quality
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: BE
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Validate Maven project
+        run: mvn validate
+
+      - name: Run Checkstyle
+        run: mvn checkstyle:check
